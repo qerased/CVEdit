@@ -25,6 +25,9 @@ void main_window::create_ui ()
 
     preview_label_->setText("File->ShowTest");
 
+    preview_label_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
+    preview_label_->setMinimumSize (100, 100);
+
     layout->addWidget (preview_label_);
     layout->setContentsMargins (12, 12, 12, 12);
     central->setLayout (layout);
@@ -78,4 +81,11 @@ void main_window::show_test_image ()
     current_pixmap_ = pixmap;
     update_preview ();
     statusBar()->showMessage("Test image is shown", 3000);
+}
+
+void main_window::resizeEvent (QResizeEvent* e)
+{
+    QMainWindow::resizeEvent(e);
+    if (!current_pixmap_.isNull())
+        update_preview ();
 }

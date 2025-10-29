@@ -19,6 +19,8 @@ private:
 
     void update_preview ();
 
+    void resizeEvent(QResizeEvent *event) override;
+
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
 };
