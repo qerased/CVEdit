@@ -14,6 +14,7 @@ qt_add_executable(CVEdit
         src/main.cpp
         src/main_window.h
         src/main_window.cpp
+        resources/icons.qrc
 )
 
 target_link_libraries(CVEdit PRIVATE Qt6::Widgets)
