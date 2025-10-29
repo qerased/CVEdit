@@ -7,6 +7,11 @@ class main_window : public QMainWindow
     Q_OBJECT
 public:
     explicit main_window (QWidget *parent = nullptr);
+
+private:
+    void create_ui ();
+    void create_menus ();
+    void create_status_bar ();
 };
 
 
