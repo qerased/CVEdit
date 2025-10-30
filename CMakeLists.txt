@@ -18,6 +18,8 @@ qt_add_executable(CVEdit
         src/main_window.cpp
         src/utils.h
         src/utils.cpp
+        src/video_source.h
+        src/video_source.cpp
         resources/icons.qrc
 )
 
