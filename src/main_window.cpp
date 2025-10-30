@@ -196,13 +196,21 @@ void main_window::on_grab_tick ()
     cv::Mat frame;
     if (!source_->read (frame) || frame.empty ())
     {
-        stop_source ();
-        preview_label_->setText ("Stopped source");
-        statusBar ()->showMessage ("Failed to get frames from source", 3000);
-        return;
+        if (source_->get_type () == video_source::type::Video)
+        {
+            source_->restart_video ();
+        }
+        else
+        {
+            stop_source ();
+            preview_label_->setText ("Stopped source");
+            statusBar ()->showMessage ("Failed to get frames from source", 3000);
+            return;
+        }
     }
 
-    cv::flip (frame, frame, 1);
+    if (source_->get_type () == video_source::type::Webcam)
+        cv::flip (frame, frame, 1);
 
     current_pixmap_ = utils::mat_to_pixmap (frame);
     update_preview ();

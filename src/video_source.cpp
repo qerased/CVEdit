@@ -10,8 +10,12 @@ bool video_source::open_webcam (int index, std::optional<int> width, std::option
     close ();
 
     if (!cap_.open (index, cv::CAP_ANY))
+    {
+        type_ = type::None;
         return false;
+    }
 
+    type_ = type::Webcam;
     if (width) cap_.set (cv::CAP_PROP_FRAME_WIDTH, *width);
     if (height) cap_.set (cv::CAP_PROP_FRAME_HEIGHT, *height);
     return cap_.isOpened ();
@@ -21,7 +25,12 @@ bool video_source::open_video (const std::string & path)
 {
     close ();
     if (!cap_.open (path, cv::CAP_ANY))
+    {
         return false;
+        type_ = type::None;
+    }
+
+    type_ = type::Video;
     return cap_.isOpened ();
 }
 
@@ -34,6 +43,8 @@ void video_source::close ()
 {
     if (cap_.isOpened ())
         cap_.release ();
+
+    type_ = type::None;
 }
 
 bool video_source::read (cv::Mat & out_img)
@@ -54,5 +65,15 @@ cv::Size video_source::frame_size () const
     int w = static_cast<int> (cap_.get (cv::CAP_PROP_FRAME_WIDTH));
     int h = static_cast<int> (cap_.get (cv::CAP_PROP_FRAME_HEIGHT));
     return cv::Size (w, h);
+}
+
+video_source::type video_source::get_type () const
+{
+    return type_;
+}
+
+void video_source::restart_video ()
+{
+    cap_.set(cv::CAP_PROP_POS_FRAMES, 0);
 }
 
