@@ -3,6 +3,8 @@
 #include <QMainWindow>
 #include <QLabel>
 
+#include "video_source.h"
+
 class main_window : public QMainWindow
 {
     Q_OBJECT
@@ -12,6 +14,10 @@ public:
 private slots:
     void show_test_image ();
     void open_image_from_disk ();
+
+    void start_webcam ();
+    void stop_source ();
+    void on_grab_tick ();
 
 private:
     void create_ui ();
@@ -24,6 +30,12 @@ private:
 
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
+
+    std::unique_ptr <video_source> source_;
+    QTimer * grab_timer_ = nullptr;
+
+    QAction * act_start_webcam = nullptr;
+    QAction * act_stop_        = nullptr;
 };
 
 
