@@ -19,6 +19,8 @@ private slots:
     void stop_source ();
     void on_grab_tick ();
 
+    void open_video_file ();
+
 private:
     void create_ui ();
     void create_menus ();

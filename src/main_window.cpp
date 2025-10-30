@@ -48,7 +48,7 @@ void main_window::create_ui ()
 void main_window::create_menus ()
 {
     auto * file_menu = menuBar ()->addMenu ("File");
-    auto * act_show_test = new QAction ("Show Test", this);
+    auto * act_show_test = new QAction ("Show Test Image", this);
     connect (act_show_test, &QAction::triggered, this, &main_window::show_test_image);
     file_menu->addAction (act_show_test);
 
@@ -56,6 +56,9 @@ void main_window::create_menus ()
     connect (act_open_image, &QAction::triggered, this, &main_window::open_image_from_disk);
     file_menu->addAction (act_open_image);
 
+    auto * act_open_video = new QAction ("Open Video", this);
+    connect (act_open_video, &QAction::triggered, this, &main_window::open_video_file);
+    file_menu->addAction (act_open_video);
 
     auto * source_menu = menuBar ()->addMenu ("Source");
     act_start_webcam = new QAction ("Start Webcam", this);
@@ -204,4 +207,40 @@ void main_window::on_grab_tick ()
     current_pixmap_ = utils::mat_to_pixmap (frame);
     update_preview ();
 }
+
+void main_window::open_video_file()
+{
+    stop_source ();
+
+    const QString filter = "Video (*.mp4 *.avi *.mov);;All (*.*)";
+    const QString path = QFileDialog::getOpenFileName (this, "Open Video", QString (), filter);
+    if (path.isEmpty ()) return;
+
+    source_ = std::make_unique<video_source> ();
+    if (!source_->open_video (path.toStdString ()))
+    {
+        source_.reset ();
+        preview_label_->setText (QString("Failed to open video:\n%1").arg(path));
+        statusBar ()->showMessage ("Failed to open video", 3000);
+        return;
+    }
+
+    double fps = source_->fps ();
+    if (fps > 1. && fps < 240.)
+    {
+        int ms = static_cast<int> (1000 / fps);
+        grab_timer_->setInterval (std::max (10, ms));
+    }
+    else
+    {
+        grab_timer_->setInterval (33);
+    }
+
+    act_start_webcam->setEnabled (true);
+    act_stop_->setEnabled (true);
+    grab_timer_->start ();
+
+    statusBar()->showMessage (QString("Opened Video : %1").arg (path), 3000);
+}
+
 
