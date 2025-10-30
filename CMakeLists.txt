@@ -21,6 +21,9 @@ qt_add_executable(CVEdit
         src/video_source.h
         src/video_source.cpp
         resources/icons.qrc
+
+        src/filters/filter.h
+        src/filters/filter_grayscale.h
 )
 
 target_link_libraries(CVEdit PRIVATE Qt6::Widgets ${OpenCV_LIBS})
