@@ -4,6 +4,10 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QFileDialog>
+#include <opencv2/core.hpp>
+
+#include "utils.h"
 
 main_window::main_window (QWidget *parent)
 {
@@ -38,9 +42,14 @@ void main_window::create_ui ()
 void main_window::create_menus ()
 {
     auto * file_menu = menuBar ()->addMenu ("File");
-    auto * act_show_test = new QAction ("Show Test");
+    auto * act_show_test = new QAction ("Show Test", this);
     connect (act_show_test, &QAction::triggered, this, &main_window::show_test_image);
     file_menu->addAction (act_show_test);
+
+    auto * act_open_image = new QAction ("Open Image", this);
+    connect (act_open_image, &QAction::triggered, this, &main_window::open_image_from_disk);
+    file_menu->addAction (act_open_image);
+
 
     auto * source_menu = menuBar ()->addMenu ("Source");
     auto * help_menu = menuBar ()->addMenu ("Help");
@@ -88,4 +97,24 @@ void main_window::resizeEvent (QResizeEvent* e)
     QMainWindow::resizeEvent(e);
     if (!current_pixmap_.isNull())
         update_preview ();
+}
+
+void main_window::open_image_from_disk ()
+{
+    const QString path = QFileDialog::getOpenFileName (this, "Open Image", QString ());
+
+    if (path.isEmpty ()) return;
+
+    QString err;
+    cv::Mat mat = utils::load_image_mat (path, &err);
+    if (mat.empty ())
+    {
+        preview_label_->setText (QString ("Unable to open image:\n%1\n%2").arg (path, err));
+        statusBar ()->showMessage ("Failed to load image from disk", 3000);
+        return;
+    }
+
+    current_pixmap_ = utils::mat_to_pixmap (mat);
+    update_preview ();
+    statusBar ()->showMessage (QString ("Image opened: %1").arg (QFileInfo (path).fileName ()), 3000);
 }

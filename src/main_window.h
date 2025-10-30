@@ -11,6 +11,7 @@ public:
 
 private slots:
     void show_test_image ();
+    void open_image_from_disk ();
 
 private:
     void create_ui ();
