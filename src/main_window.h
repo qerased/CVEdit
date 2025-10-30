@@ -28,6 +28,9 @@ private:
 
     void update_preview ();
 
+    void reprocess_and_show ();
+    void show_mat (const cv::Mat & mat);
+
     void resizeEvent(QResizeEvent *event) override;
 
     QLabel * preview_label_ = nullptr;
@@ -38,6 +41,11 @@ private:
 
     QAction * act_start_webcam = nullptr;
     QAction * act_stop_        = nullptr;
+
+    //// filters
+    cv::Mat current_frame_orig_;
+    cv::Mat current_frame_processed_;
+    bool is_live_ {false};
 };
 
 

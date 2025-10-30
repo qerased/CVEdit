@@ -96,16 +96,19 @@ void main_window::update_preview ()
 
 void main_window::show_test_image ()
 {
-    QPixmap pixmap (":/test.png");
-
-    if (pixmap.isNull()) {
-        preview_label_->setText("Failed to load :/test.jpg");
-        statusBar()->showMessage("Failed to load test image", 3000);
+    stop_source ();
+    cv::Mat mat = utils::load_image_mat (":/test.png");
+    if (mat.empty ())
+    {
+        preview_label_->setText ("Failed to load :/test.jpg");
+        statusBar ()->showMessage ("Failed to load test image", 3000);
         return;
     }
+    is_live_ = false;
 
-    current_pixmap_ = pixmap;
-    update_preview ();
+    current_frame_orig_ = mat;
+    reprocess_and_show ();
+
     statusBar()->showMessage("Test image is shown", 3000);
 }
 
@@ -131,9 +134,10 @@ void main_window::open_image_from_disk ()
         statusBar ()->showMessage ("Failed to load image from disk", 3000);
         return;
     }
+    is_live_ = false;
 
-    current_pixmap_ = utils::mat_to_pixmap (mat);
-    update_preview ();
+    current_frame_orig_ = mat;
+    reprocess_and_show ();
     statusBar ()->showMessage (QString ("Image opened: %1").arg (QFileInfo (path).fileName ()), 3000);
 }
 
@@ -150,6 +154,7 @@ void main_window::start_webcam ()
         statusBar ()->showMessage ("Failed to open Webcam", 3000);
         return;
     }
+    is_live_ = true;
 
     double fps = source_->fps ();
     if (fps > 1. && fps < 240.)
@@ -180,6 +185,7 @@ void main_window::stop_source()
         source_->close ();
         source_.reset ();
     }
+    is_live_ = false;
 
     act_start_webcam->setEnabled (true);
     act_stop_->setEnabled (false);
@@ -219,8 +225,8 @@ void main_window::on_grab_tick ()
     if (source_->get_type () == video_source::type::Webcam)
         cv::flip (frame, frame, 1);
 
-    current_pixmap_ = utils::mat_to_pixmap (frame);
-    update_preview ();
+    current_frame_orig_ = frame;
+    reprocess_and_show ();
 }
 
 void main_window::open_video_file()
@@ -239,6 +245,7 @@ void main_window::open_video_file()
         statusBar ()->showMessage ("Failed to open video", 3000);
         return;
     }
+    is_live_ = true;
 
     double fps = source_->fps ();
     if (fps > 1. && fps < 240.)
@@ -258,4 +265,18 @@ void main_window::open_video_file()
     statusBar()->showMessage (QString("Opened Video : %1").arg (path), 3000);
 }
 
+void main_window::reprocess_and_show ()
+{
+    if (current_frame_orig_.empty ())
+        return;
 
+    current_frame_processed_ = current_frame_orig_.clone ();
+    /// process filters here
+    show_mat (current_frame_processed_);
+}
+
+void main_window::show_mat (const cv::Mat & mat)
+{
+    current_pixmap_ = utils::mat_to_pixmap (mat);
+    update_preview ();
+}
