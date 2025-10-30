@@ -15,6 +15,8 @@ public:
                       std::optional<int> width = std::nullopt,
                       std::optional<int> height = std::nullopt);
 
+    bool open_video (const std::string & path);
+
     bool is_opened () const;
     void close ();
 

@@ -17,6 +17,14 @@ bool video_source::open_webcam (int index, std::optional<int> width, std::option
     return cap_.isOpened ();
 }
 
+bool video_source::open_video (const std::string & path)
+{
+    close ();
+    if (!cap_.open (path, cv::CAP_ANY))
+        return false;
+    return cap_.isOpened ();
+}
+
 bool video_source::is_opened () const
 {
     return cap_.isOpened ();
