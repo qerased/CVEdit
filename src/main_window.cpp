@@ -101,7 +101,8 @@ void main_window::resizeEvent (QResizeEvent* e)
 
 void main_window::open_image_from_disk ()
 {
-    const QString path = QFileDialog::getOpenFileName (this, "Open Image", QString ());
+    const QString filter = "Images (*.png *.jpg *.jpeg *.bmp *.tiff);;All (*.*)";
+    const QString path = QFileDialog::getOpenFileName (this, "Open Image", QString (), filter);
 
     if (path.isEmpty ()) return;
 
