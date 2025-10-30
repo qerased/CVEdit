@@ -183,6 +183,13 @@ void main_window::stop_source()
 
     act_start_webcam->setEnabled (true);
     act_stop_->setEnabled (false);
+
+    current_pixmap_ = QPixmap ();
+    preview_label_->clear ();
+    preview_label_->setText ("Source stopped");
+    preview_label_->setAlignment (Qt::AlignCenter);
+
+    statusBar ()->showMessage ("Source stopped", 3000);
 }
 
 void main_window::on_grab_tick ()
