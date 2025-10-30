@@ -31,5 +31,9 @@ cv::Mat load_image_mat (const QString &path, QString *error)
     return img;
 }
 
+QImage mat_to_qimage (const cv::Mat &img)
+{
+
+}
 
 }
