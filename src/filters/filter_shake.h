@@ -1,8 +1,8 @@
-#ifndef CVEDIT_FILTER_GLITCH_H
-#define CVEDIT_FILTER_GLITCH_H
+#ifndef CVEDIT_FILTER_SHAKE_H
+#define CVEDIT_FILTER_SHAKE_H
 #include "filter.h"
 
-class filter_glitch : public filter
+class filter_shake : public filter
 {
 public:
     const char *  name () const override { return "Glitch"; }
@@ -30,4 +30,4 @@ public:
 
 };
 
-#endif //CVEDIT_FILTER_GLITCH_H
+#endif //CVEDIT_FILTER_SHAKE_H

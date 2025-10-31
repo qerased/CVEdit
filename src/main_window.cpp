@@ -24,12 +24,12 @@ main_window::main_window (QWidget *parent)
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
     filter_blur_ = filter_chain_.add<filter_blur> ();
     filter_canny_ = filter_chain_.add<filter_canny> ();
-    filter_glitch_ = filter_chain_.add<filter_glitch> ();
+    filter_shake_ = filter_chain_.add<filter_shake> ();
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
     filter_canny_->set_enabled (false);
-    filter_glitch_->set_enabled (false);
+    filter_shake_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -136,14 +136,14 @@ void main_window::create_filters_dock ()
 
     /// glitch
     {
-        auto * box = new QGroupBox ("Glitch");
+        auto * box = new QGroupBox ("Shake");
         auto * h = new QHBoxLayout (box);
-        chk_glitch_ = new QCheckBox ("Enable", box);
-        chk_glitch_->setChecked (false);
-        h->addWidget (chk_glitch_);
+        chk_shake_ = new QCheckBox ("Enable", box);
+        chk_shake_->setChecked (false);
+        h->addWidget (chk_shake_);
         box->setLayout (h);
         v->addWidget (box);
-        connect (chk_glitch_, &QCheckBox::toggled, this, &main_window::on_toggle_glitch);
+        connect (chk_shake_, &QCheckBox::toggled, this, &main_window::on_toggle_shake);
     }
 
     v->addStretch (1);
@@ -432,8 +432,8 @@ void main_window::on_slider_canny2 (double val)
     if (!is_live_) reprocess_and_show ();
 }
 
-void main_window::on_toggle_glitch (bool on)
+void main_window::on_toggle_shake (bool on)
 {
-    filter_glitch_->set_enabled (on);
+    filter_shake_->set_enabled (on);
     if (!is_live_) reprocess_and_show ();
 }
