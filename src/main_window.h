@@ -64,6 +64,7 @@ private:
     QAction * act_stop_         = nullptr;
 
     //// filters
+    unsigned int tick_num_ {0};
     cv::Mat current_frame_orig_;
     cv::Mat current_frame_processed_;
     bool is_live_ {false};

@@ -3,6 +3,11 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+struct frame_info
+{
+    unsigned int tick_num_;
+};
+
 class filter
 {
 public:
@@ -13,6 +18,10 @@ public:
     bool enabled () const { return enabled_; }
     virtual void apply (cv::Mat & mat) = 0;
 
+    virtual void apply (cv::Mat & mat, frame_info & fi)
+    {
+        apply (mat);
+    }
 private:
     bool enabled_ {true};
 };
@@ -32,11 +41,11 @@ public:
 
     void clear () { filters_.clear (); }
 
-    void apply_all (cv::Mat& mat)
+    void apply_all (cv::Mat& mat, frame_info & fi)
     {
         for (auto & f : filters_)
             if (f->enabled ())
-                f->apply(mat);
+                f->apply(mat, fi);
     }
 
     std::vector<std::unique_ptr<filter>> & filters () { return filters_; }

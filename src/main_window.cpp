@@ -377,8 +377,11 @@ void main_window::reprocess_and_show ()
     if (current_frame_orig_.empty ())
         return;
 
+    tick_num_++;
+
     current_frame_processed_ = current_frame_orig_.clone ();
-    filter_chain_.apply_all (current_frame_processed_);
+    frame_info fi {tick_num_};
+    filter_chain_.apply_all (current_frame_processed_, fi);
     show_mat (current_frame_processed_);
 }
 
