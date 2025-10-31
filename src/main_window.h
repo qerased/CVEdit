@@ -2,6 +2,8 @@
 #define CVEDIT_MAIN_WINDOW_H
 #include <QMainWindow>
 #include <QLabel>
+#include <QCheckBox>
+#include <QDockWidget>
 
 #include "video_source.h"
 #include "filters/filter.h"
@@ -23,10 +25,14 @@ private slots:
 
     void open_video_file ();
 
+    /// filters
+    void on_toggle_grayscale (bool on);
+
 private:
     void create_ui ();
     void create_menus ();
     void create_status_bar ();
+    void create_filters_dock ();
 
     void update_preview ();
 
@@ -51,6 +57,9 @@ private:
 
     filter_chain filter_chain_;
     filter_grayscale * filter_grayscale_;
+
+    QDockWidget * dock_filters_ = nullptr;
+    QCheckBox * chk_grayscale_  = nullptr;
 };
 
 

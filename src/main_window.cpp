@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QFileDialog>
 #include <QTimer>
+#include <QGroupBox>
 #include <opencv2/core.hpp>
 
 #include "utils.h"
@@ -18,9 +19,10 @@ main_window::main_window (QWidget *parent)
     create_ui ();
     create_menus ();
     create_status_bar ();
+    create_filters_dock ();
 
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
-    filter_grayscale_->set_enabled (true);
+    filter_grayscale_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -47,6 +49,40 @@ void main_window::create_ui ()
     grab_timer_->setInterval (33);
     connect (grab_timer_, &QTimer::timeout, this, &main_window::on_grab_tick);
 }
+
+void main_window::create_filters_dock ()
+{
+    dock_filters_ = new QDockWidget ("Filters", this);
+    dock_filters_->setObjectName ("dock_filters");
+    dock_filters_->setAllowedAreas (Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+
+    dock_filters_->setFeatures (QDockWidget::DockWidgetMovable);
+
+    setDockOptions (QMainWindow::AllowTabbedDocks |
+                    QMainWindow::GroupedDragging |
+                    QMainWindow::AnimatedDocks);
+
+    auto * w = new QWidget (dock_filters_);
+    auto * v = new QVBoxLayout (w);
+
+    /// grayscale
+    {
+        auto * box = new QGroupBox ("Grayscale");
+        auto * h = new QHBoxLayout (box);
+        chk_grayscale_ = new QCheckBox ("Enable", box);
+        chk_grayscale_->setChecked (false);
+        h->addWidget (chk_grayscale_);
+        box->setLayout (h);
+        v->addWidget (box);
+        connect (chk_grayscale_, &QCheckBox::toggled, this, &main_window::on_toggle_grayscale);
+    }
+
+    v->addStretch (1);
+    w->setLayout (v);
+    dock_filters_->setWidget (w);
+    addDockWidget (Qt::RightDockWidgetArea, dock_filters_);
+}
+
 
 void main_window::create_menus ()
 {
@@ -282,4 +318,10 @@ void main_window::show_mat (const cv::Mat & mat)
 {
     current_pixmap_ = utils::mat_to_pixmap (mat);
     update_preview ();
+}
+
+void main_window::on_toggle_grayscale (bool on)
+{
+    filter_grayscale_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
 }
