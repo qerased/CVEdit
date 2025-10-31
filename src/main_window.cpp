@@ -23,9 +23,11 @@ main_window::main_window (QWidget *parent)
 
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
     filter_blur_ = filter_chain_.add<filter_blur> ();
+    filter_canny_ = filter_chain_.add<filter_canny> ();
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
+    filter_canny_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -99,6 +101,34 @@ void main_window::create_filters_dock ()
 
         connect (chk_blur_, &QCheckBox::toggled, this, &main_window::on_toggle_blur);
         connect (slider_blur_, &QSlider::valueChanged, this, &main_window::on_slider_blur);
+    }
+
+    /// canny
+    {
+        auto * box = new QGroupBox ("Canny");
+        auto * h = new QHBoxLayout (box);
+        chk_canny_ = new QCheckBox ("Enable", box);
+        chk_canny_->setChecked (false);
+        h->addWidget (chk_canny_);
+
+        slider_canny_thr1 = new QSlider (Qt::Horizontal, box);
+        slider_canny_thr1->setMinimum (1);
+        slider_canny_thr1->setMaximum (200);
+        slider_canny_thr1->setValue (100);
+        h->addWidget (slider_canny_thr1);
+
+        slider_canny_thr2 = new QSlider (Qt::Horizontal, box);
+        slider_canny_thr2->setMinimum (1);
+        slider_canny_thr2->setMaximum (200);
+        slider_canny_thr2->setValue (200);
+        h->addWidget (slider_canny_thr2);
+
+        box->setLayout (h);
+        v->addWidget (box);
+
+        connect (chk_canny_, &QCheckBox::toggled, this, &main_window::on_toggle_canny);
+        connect (slider_canny_thr1, &QSlider::valueChanged, this, &main_window::on_slider_canny1);
+        connect (slider_canny_thr2, &QSlider::valueChanged, this, &main_window::on_slider_canny2);
     }
 
     v->addStretch (1);
@@ -359,5 +389,23 @@ void main_window::on_toggle_blur (bool on)
 void main_window::on_slider_blur (int val)
 {
     filter_blur_->change_k_size (val);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_toggle_canny (bool on)
+{
+    filter_canny_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_slider_canny1 (double val)
+{
+    filter_canny_->set_thr1 (val);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_slider_canny2 (double val)
+{
+    filter_canny_->set_thr2 (val);
     if (!is_live_) reprocess_and_show ();
 }

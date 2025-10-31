@@ -9,6 +9,7 @@
 #include "video_source.h"
 #include "filters/filter.h"
 #include "filters/filter_blur.h"
+#include "filters/filter_canny.h"
 #include "filters/filter_grayscale.h"
 
 class main_window : public QMainWindow
@@ -29,8 +30,13 @@ private slots:
 
     /// filters
     void on_toggle_grayscale (bool on);
+
     void on_toggle_blur (bool on);
     void on_slider_blur (int val);
+
+    void on_toggle_canny (bool on);
+    void on_slider_canny1 (double val);
+    void on_slider_canny2 (double val);
 
 private:
     void create_ui ();
@@ -60,14 +66,20 @@ private:
     bool is_live_ {false};
 
     filter_chain filter_chain_;
-    filter_grayscale * filter_grayscale_;
-    filter_blur * filter_blur_;
 
     QDockWidget * dock_filters_ = nullptr;
+
+    filter_grayscale * filter_grayscale_;
     QCheckBox * chk_grayscale_  = nullptr;
 
+    filter_blur * filter_blur_;
     QCheckBox * chk_blur_       = nullptr;
     QSlider * slider_blur_      = nullptr;
+
+    filter_canny * filter_canny_;
+    QCheckBox * chk_canny_       = nullptr;
+    QSlider * slider_canny_thr1  = nullptr;
+    QSlider * slider_canny_thr2  = nullptr;
 };
 
 
