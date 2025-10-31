@@ -64,9 +64,9 @@ void main_window::create_menus ()
     file_menu->addAction (act_open_video);
 
     auto * source_menu = menuBar ()->addMenu ("Source");
-    act_start_webcam = new QAction ("Start Webcam", this);
-    connect (act_start_webcam, &QAction::triggered, this, &main_window::start_webcam);
-    source_menu->addAction (act_start_webcam);
+    act_start_webcam_ = new QAction ("Start Webcam", this);
+    connect (act_start_webcam_, &QAction::triggered, this, &main_window::start_webcam);
+    source_menu->addAction (act_start_webcam_);
 
     act_stop_ = new QAction ("Stop Source", this);
     act_stop_->setEnabled (false);
@@ -170,7 +170,7 @@ void main_window::start_webcam ()
         grab_timer_->setInterval (33);
     }
 
-    act_start_webcam->setEnabled (false);
+    act_start_webcam_->setEnabled (false);
     act_stop_->setEnabled (true);
     grab_timer_->start ();
 
@@ -190,7 +190,7 @@ void main_window::stop_source()
     }
     is_live_ = false;
 
-    act_start_webcam->setEnabled (true);
+    act_start_webcam_->setEnabled (true);
     act_stop_->setEnabled (false);
 
     current_pixmap_ = QPixmap ();
@@ -261,7 +261,7 @@ void main_window::open_video_file()
         grab_timer_->setInterval (33);
     }
 
-    act_start_webcam->setEnabled (true);
+    act_start_webcam_->setEnabled (true);
     act_stop_->setEnabled (true);
     grab_timer_->start ();
 

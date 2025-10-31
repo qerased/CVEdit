@@ -41,8 +41,8 @@ private:
     std::unique_ptr <video_source> source_;
     QTimer * grab_timer_ = nullptr;
 
-    QAction * act_start_webcam = nullptr;
-    QAction * act_stop_        = nullptr;
+    QAction * act_start_webcam_ = nullptr;
+    QAction * act_stop_         = nullptr;
 
     //// filters
     cv::Mat current_frame_orig_;
