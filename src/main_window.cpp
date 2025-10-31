@@ -18,6 +18,9 @@ main_window::main_window (QWidget *parent)
     create_ui ();
     create_menus ();
     create_status_bar ();
+
+    filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
+    filter_grayscale_->set_enabled (true);
 }
 
 void main_window::create_ui ()
@@ -271,7 +274,7 @@ void main_window::reprocess_and_show ()
         return;
 
     current_frame_processed_ = current_frame_orig_.clone ();
-    /// process filters here
+    filter_chain_.apply_all (current_frame_processed_);
     show_mat (current_frame_processed_);
 }
 

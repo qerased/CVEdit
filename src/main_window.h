@@ -4,6 +4,8 @@
 #include <QLabel>
 
 #include "video_source.h"
+#include "filters/filter.h"
+#include "filters/filter_grayscale.h"
 
 class main_window : public QMainWindow
 {
@@ -46,6 +48,9 @@ private:
     cv::Mat current_frame_orig_;
     cv::Mat current_frame_processed_;
     bool is_live_ {false};
+
+    filter_chain filter_chain_;
+    filter_grayscale * filter_grayscale_;
 };
 
 
