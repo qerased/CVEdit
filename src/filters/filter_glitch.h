@@ -7,7 +7,9 @@ class filter_glitch : public filter
 public:
     const char *  name () const override { return "Glitch"; }
 
-    void apply (cv::Mat &mat) override
+    void apply (cv::Mat & mat) override {};
+
+    void apply (cv::Mat &mat, frame_info & fi) override
     {
         if (mat.empty()) return;
 
@@ -18,7 +20,7 @@ public:
         {
             for (int col = 0; col < mat.cols; col++)
             {
-                mapx.at<float> (row, col) = col + 10 * std::sin (row / 20 + std::rand () % 3);
+                mapx.at<float> (row, col) = col + 10 * std::sin (row / 20 + (fi.tick_num_ % 3));
                 mapy.at<float> (row, col) = row;
             }
         }

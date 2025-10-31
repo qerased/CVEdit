@@ -55,6 +55,7 @@ void main_window::create_ui ()
     grab_timer_ = new QTimer (this);
     grab_timer_->setInterval (33);
     connect (grab_timer_, &QTimer::timeout, this, &main_window::on_grab_tick);
+    grab_timer_->start ();
 }
 
 void main_window::create_filters_dock ()
@@ -284,9 +285,6 @@ void main_window::start_webcam ()
 
 void main_window::stop_source()
 {
-    if (grab_timer_->isActive ())
-        grab_timer_->stop ();
-
     if (source_)
     {
         source_->close ();
@@ -307,6 +305,13 @@ void main_window::stop_source()
 
 void main_window::on_grab_tick ()
 {
+    /// image is shown but we still need to update live filters
+    if (!is_live_)
+    {
+        reprocess_and_show ();
+        return;
+    }
+
     if (!source_ || !source_->is_opened ())
     {
         stop_source ();
