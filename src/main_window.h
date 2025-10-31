@@ -4,9 +4,11 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QDockWidget>
+#include <QSlider>
 
 #include "video_source.h"
 #include "filters/filter.h"
+#include "filters/filter_blur.h"
 #include "filters/filter_grayscale.h"
 
 class main_window : public QMainWindow
@@ -27,6 +29,8 @@ private slots:
 
     /// filters
     void on_toggle_grayscale (bool on);
+    void on_toggle_blur (bool on);
+    void on_slider_blur (int val);
 
 private:
     void create_ui ();
@@ -57,9 +61,13 @@ private:
 
     filter_chain filter_chain_;
     filter_grayscale * filter_grayscale_;
+    filter_blur * filter_blur_;
 
     QDockWidget * dock_filters_ = nullptr;
     QCheckBox * chk_grayscale_  = nullptr;
+
+    QCheckBox * chk_blur_       = nullptr;
+    QSlider * slider_blur_      = nullptr;
 };
 
 

@@ -22,7 +22,10 @@ main_window::main_window (QWidget *parent)
     create_filters_dock ();
 
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
+    filter_blur_ = filter_chain_.add<filter_blur> ();
+
     filter_grayscale_->set_enabled (false);
+    filter_blur_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -75,6 +78,27 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
         connect (chk_grayscale_, &QCheckBox::toggled, this, &main_window::on_toggle_grayscale);
+    }
+
+    /// blur
+    {
+        auto * box = new QGroupBox ("Gaussian Blur");
+        auto * h = new QHBoxLayout (box);
+        chk_blur_ = new QCheckBox ("Enable", box);
+        chk_blur_->setChecked (false);
+        h->addWidget (chk_blur_);
+
+        slider_blur_ = new QSlider (Qt::Horizontal, box);
+        slider_blur_->setValue (5);
+        slider_blur_->setMinimum (1);
+        slider_blur_->setMaximum (100);
+        h->addWidget (slider_blur_);
+
+        box->setLayout (h);
+        v->addWidget (box);
+
+        connect (chk_blur_, &QCheckBox::toggled, this, &main_window::on_toggle_blur);
+        connect (slider_blur_, &QSlider::valueChanged, this, &main_window::on_slider_blur);
     }
 
     v->addStretch (1);
@@ -323,5 +347,17 @@ void main_window::show_mat (const cv::Mat & mat)
 void main_window::on_toggle_grayscale (bool on)
 {
     filter_grayscale_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_toggle_blur (bool on)
+{
+    filter_blur_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_slider_blur (int val)
+{
+    filter_blur_->change_k_size (val);
     if (!is_live_) reprocess_and_show ();
 }
