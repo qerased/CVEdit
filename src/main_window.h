@@ -11,6 +11,7 @@
 #include "filters/filter_blur.h"
 #include "filters/filter_canny.h"
 #include "filters/filter_grayscale.h"
+#include "filters/filter_glitch.h"
 
 class main_window : public QMainWindow
 {
@@ -37,6 +38,8 @@ private slots:
     void on_toggle_canny (bool on);
     void on_slider_canny1 (double val);
     void on_slider_canny2 (double val);
+
+    void on_toggle_glitch (bool on);
 
 private:
     void create_ui ();
@@ -80,6 +83,9 @@ private:
     QCheckBox * chk_canny_       = nullptr;
     QSlider * slider_canny_thr1  = nullptr;
     QSlider * slider_canny_thr2  = nullptr;
+
+    filter_glitch * filter_glitch_;
+    QCheckBox * chk_glitch_       = nullptr;
 };
 
 
