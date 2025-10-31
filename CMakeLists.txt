@@ -23,6 +23,7 @@ qt_add_executable(CVEdit
         resources/icons.qrc
 
         src/filters/filter.h
+        src/filters/filter.cpp
         src/filters/filter_grayscale.h
 )
 

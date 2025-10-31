@@ -6,12 +6,12 @@
 class filter
 {
 public:
-    virtual ~filter() = default;
+    virtual ~filter ();
     virtual const char * name () const = 0;
 
     void set_enabled (bool e) { enabled_ = e; }
     bool enabled () const { return enabled_; }
-    virtual void apply (cv::Mat & mat);
+    virtual void apply (cv::Mat & mat) = 0;
 
 private:
     bool enabled_ {true};
