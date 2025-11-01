@@ -29,6 +29,7 @@ qt_add_executable(CVEdit
         src/filters/filter_canny.h
         src/filters/filter_shake.h
         src/filters/filter_sort.h
+        src/filters/filter_sort.cpp
 )
 
 target_link_libraries(CVEdit PRIVATE Qt6::Widgets ${OpenCV_LIBS})

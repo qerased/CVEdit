@@ -15,46 +15,18 @@ public:
 
     void apply (cv::Mat &mat) override
     {
-        std::vector<cv::Vec3b> pixels;
-        pixels.reserve (mat.cols * mat.rows);
+        if (mat.empty ()) return;
 
-        for (int row = 0; row < mat.rows; row++)
-            for (int col = 0; col < mat.cols; col++)
-                pixels.push_back (mat.at<cv::Vec3b> (row, col));
-
-        std::ranges::sort (pixels, [this] (const cv::Vec3b &a, const cv::Vec3b &b)
+        switch (mode_)
         {
-            switch (mode_)
-            {
-                case sort_mode::Red:
-                    return a[2] < b[2];
-                case sort_mode::Green:
-                    return a[1] < b[1];
-                case sort_mode::Blue:
-                    return a[0] < b[0];
-                case sort_mode::Hue:
-                {
-                    cv::Mat a_mat(1, 1, CV_8UC3, cv::Scalar(a[0], a[1], a[2]));
-                    cv::Mat b_mat(1, 1, CV_8UC3, cv::Scalar(b[0], b[1], b[2]));
-                    cv::Mat a_hsv, b_hsv;
-                    cv::cvtColor (a_mat, a_hsv, cv::COLOR_BGR2HSV);
-                    cv::cvtColor (b_mat, b_hsv, cv::COLOR_BGR2HSV);
-                    return a_hsv.at<cv::Vec3b>(0, 0)[0] < b_hsv.at<cv::Vec3b>(0, 0)[0];
-                }
-                case sort_mode::Luminosity:
-                default:
-                    auto lum = [] (const cv::Vec3b & p)
-                    {
-                        return 0.299 * p[2] + 0.587 * p[1] + 0.114 * p[0];
-                    };
-                    return lum (a) < lum (b);
-            }
-        });
-
-        int idx = 0;
-        for (int row = 0; row < mat.rows; row++)
-            for (int col = 0; col < mat.cols; col++)
-                mat.at<cv::Vec3b> (row, col) = pixels[idx++];
+            case sort_mode::Red:   sort_by_channel (mat, 2, 256); break;
+            case sort_mode::Green: sort_by_channel (mat, 1, 256); break;
+            case sort_mode::Blue:  sort_by_channel (mat, 0, 256); break;
+            case sort_mode::Hue:
+            case sort_mode::Luminosity:
+            default:
+                break;
+        }
     }
 
     void set_mode (const sort_mode mode)
@@ -63,6 +35,11 @@ public:
     }
 private:
     sort_mode mode_ {sort_mode::Luminosity};
+
+    void counting_scatter (const uint8_t * keys, int bins,
+                           const cv::Mat & src, cv::Mat & dst) const;
+
+    void sort_by_channel (cv::Mat & mat, int ch, int bins) const;
 };
 
 #endif //CVEDIT_FILTER_SORT_H
