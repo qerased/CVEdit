@@ -34,25 +34,17 @@ private slots:
     void open_video_file ();
 
     /// filters
-    void on_toggle_grayscale (bool on);
-
-    void on_toggle_blur (bool on);
     void on_slider_blur (int val);
 
-    void on_toggle_canny (bool on);
     void on_slider_canny1 (double val);
     void on_slider_canny2 (double val);
 
-    void on_toggle_shake (bool on);
-
-    void on_toggle_sort      (bool on);
     void on_combo_sort_mode  (int idx);
     void on_combo_sort_scope (int idx);
     void on_combo_sort_axis  (int idx);
     void on_spin_sort_chunk  (int val);
     void on_spin_sort_stride (int val);
 
-    void on_toggle_kuwahara (bool on);
     void on_spin_kuwahara   (int val);
 
 private:
@@ -67,6 +59,8 @@ private:
     void show_mat (const cv::Mat & mat);
 
     void resizeEvent(QResizeEvent *event) override;
+
+    void bind_toggle (QCheckBox * chk, filter * f);
 
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;

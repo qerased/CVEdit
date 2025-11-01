@@ -20,7 +20,6 @@ main_window::main_window (QWidget *parent)
     create_ui ();
     create_menus ();
     create_status_bar ();
-    create_filters_dock ();
 
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
     filter_blur_ = filter_chain_.add<filter_blur> ();
@@ -28,6 +27,8 @@ main_window::main_window (QWidget *parent)
     filter_sort_ = filter_chain_.add<filter_sort> ();
     filter_canny_ = filter_chain_.add<filter_canny> (); /// TODO: add smart ordering and prevent canny before sort
     filter_kuwahara_ = filter_chain_.add<filter_kuwahara> ();
+
+    create_filters_dock ();
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
@@ -63,6 +64,15 @@ void main_window::create_ui ()
     grab_timer_->start ();
 }
 
+void main_window::bind_toggle (QCheckBox * chk, filter * f)
+{
+    connect(chk, &QCheckBox::toggled, this,
+            [this, f] (bool on) {
+                f->set_enabled (on);
+                if (!is_live_) reprocess_and_show ();
+            });
+}
+
 void main_window::create_filters_dock ()
 {
     dock_filters_ = new QDockWidget ("Filters", this);
@@ -95,7 +105,7 @@ void main_window::create_filters_dock ()
         h->addWidget (chk_grayscale_);
         box->setLayout (h);
         v->addWidget (box);
-        connect (chk_grayscale_, &QCheckBox::toggled, this, &main_window::on_toggle_grayscale);
+        bind_toggle (chk_grayscale_, filter_grayscale_);
     }
 
     /// blur
@@ -115,7 +125,7 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
 
-        connect (chk_blur_, &QCheckBox::toggled, this, &main_window::on_toggle_blur);
+        bind_toggle (chk_blur_, filter_blur_);
         connect (slider_blur_, &QSlider::valueChanged, this, &main_window::on_slider_blur);
     }
 
@@ -142,7 +152,7 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
 
-        connect (chk_canny_, &QCheckBox::toggled, this, &main_window::on_toggle_canny);
+        bind_toggle (chk_canny_, filter_canny_);
         connect (slider_canny_thr1, &QSlider::valueChanged, this, &main_window::on_slider_canny1);
         connect (slider_canny_thr2, &QSlider::valueChanged, this, &main_window::on_slider_canny2);
     }
@@ -156,7 +166,7 @@ void main_window::create_filters_dock ()
         h->addWidget (chk_shake_);
         box->setLayout (h);
         v->addWidget (box);
-        connect (chk_shake_, &QCheckBox::toggled, this, &main_window::on_toggle_shake);
+        bind_toggle (chk_shake_, filter_shake_);
     }
 
     /// sort
@@ -204,7 +214,7 @@ void main_window::create_filters_dock ()
 
         box->setLayout (h);
         v->addWidget (box);
-        connect (chk_sort_, &QCheckBox::toggled, this, &main_window::on_toggle_sort);
+        bind_toggle (chk_sort_, filter_sort_);
         connect (combo_sort_mode_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_mode);
         connect (combo_sort_scope_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_scope);
         connect (combo_sort_axis_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_axis);
@@ -230,7 +240,7 @@ void main_window::create_filters_dock ()
 
         box->setLayout (h);
         v->addWidget (box);
-        connect (chk_kuwahara_, &QCheckBox::toggled, this, &main_window::on_toggle_kuwahara);
+        bind_toggle (chk_kuwahara_, filter_kuwahara_);
         connect (spin_kuwahara_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_kuwahara);
     }
 
@@ -485,27 +495,9 @@ void main_window::show_mat (const cv::Mat & mat)
     update_preview ();
 }
 
-void main_window::on_toggle_grayscale (bool on)
-{
-    filter_grayscale_->set_enabled (on);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_toggle_blur (bool on)
-{
-    filter_blur_->set_enabled (on);
-    if (!is_live_) reprocess_and_show ();
-}
-
 void main_window::on_slider_blur (int val)
 {
     filter_blur_->change_k_size (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_toggle_canny (bool on)
-{
-    filter_canny_->set_enabled (on);
     if (!is_live_) reprocess_and_show ();
 }
 
@@ -518,18 +510,6 @@ void main_window::on_slider_canny1 (double val)
 void main_window::on_slider_canny2 (double val)
 {
     filter_canny_->set_thr2 (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_toggle_shake (bool on)
-{
-    filter_shake_->set_enabled (on);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_toggle_sort (bool on)
-{
-    filter_sort_->set_enabled (on);
     if (!is_live_) reprocess_and_show ();
 }
 
@@ -563,12 +543,6 @@ void main_window::on_spin_sort_chunk (int val)
 void main_window::on_spin_sort_stride (int val)
 {
     filter_sort_->set_stride (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_toggle_kuwahara (bool on)
-{
-    filter_kuwahara_->set_enabled (on);
     if (!is_live_) reprocess_and_show ();
 }
 
