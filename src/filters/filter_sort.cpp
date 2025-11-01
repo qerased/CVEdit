@@ -80,45 +80,56 @@ void filter_sort::sort_rows (cv::Mat &mat)
     std::vector<cv::Vec3b> buf;
     buf.reserve (chunk);
 
-    for (int y = 0; y < h; y++)
+    const int dx = axis_ == sort_axis::Vertical ? stride : 1;
+    const int dy = axis_ == sort_axis::Vertical ? 1 : stride;
+
+    const unsigned int xlen = axis_ == sort_axis::Vertical ? chunk : w;
+    const unsigned int yloop = axis_ == sort_axis::Vertical ? 1 : chunk;
+
+    for (int y = 0; y < h; y += dy)
     {
-        auto * row = mat.ptr<cv::Vec3b> (y);
-        for (int x = 0; x < w; x += stride)
+        for (int y0 = y; y0 < std::min (y + yloop, h); y0++)
         {
-            const int len = std::min (chunk, w - x);
-            keys.resize (len);
-            buf.resize (len);
-
-            if (mode_ == sort_mode::Hue)
+            auto * row = mat.ptr<cv::Vec3b> (y0);
+            for (int x = 0; x < w; x += dx)
             {
-                cv::Mat row_mat (1, w, CV_8UC3, row);
-                cv::Mat hsv_row;
-                cv::cvtColor (row_mat, hsv_row, cv::COLOR_BGR2HSV);
-                auto * hsvp = hsv_row.ptr<cv::Vec3b> (0) + x;
-                for (int i = 0; i < len; i++)
+                const int len = std::min (xlen, w - x);
+                keys.resize (len);
+                buf.resize (len);
+
+                if (mode_ == sort_mode::Hue)
                 {
-                    buf[i] = row[x + i];
-                    keys[i] = hsvp[i][0];
+                    cv::Mat row_mat (1, w, CV_8UC3, row);
+                    cv::Mat hsv_row;
+                    cv::cvtColor (row_mat, hsv_row, cv::COLOR_BGR2HSV);
+                    auto * hsvp = hsv_row.ptr<cv::Vec3b> (0) + x;
+                    for (int i = 0; i < len; i++)
+                    {
+                        buf[i] = row[x + i];
+                        keys[i] = hsvp[i][0];
+                    }
                 }
-            }
-            else
-            {
-                for (int i = 0; i < len; i++)
+                else
                 {
-                    const auto p = row[x + i];
-                    buf[i] = p;
-                    keys[i] = pixel_key_bgr (p);
+                    for (int i = 0; i < len; i++)
+                    {
+                        const auto p = row[x + i];
+                        buf[i] = p;
+                        keys[i] = pixel_key_bgr (p);
+                    }
                 }
+
+                std::vector<cv::Vec3b> out (len);
+                counting_scatter_segment (buf.data (), keys.data (), len,
+                                          bins, counts, offsets, out.data ());
+
+                for (int i = 0; i < len; i++)
+                    row[x + i] = out[i];
+
+                if ((axis_ == sort_axis::Vertical && chunk == 0) ||
+                     axis_ == sort_axis::Horizontal)
+                    break;
             }
-
-            std::vector<cv::Vec3b> out (len);
-            counting_scatter_segment (buf.data (), keys.data (), len,
-                                      bins, counts, offsets, out.data ());
-
-            for (int i = 0; i < len; i++)
-                row[x + i] = out[i];
-
-            if (stride == 0) break;
         }
     }
 }
@@ -127,6 +138,9 @@ void filter_sort::sort_cols (cv::Mat & mat)
 {
     cv::Mat rot;
     cv::rotate (mat, rot, cv::ROTATE_90_CLOCKWISE);
+    auto save = axis_;
+    axis_ = axis_ == sort_axis::Vertical ? sort_axis::Horizontal : sort_axis::Vertical;
     sort_rows (rot);
+    axis_ = save;
     cv::rotate (rot, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
 }

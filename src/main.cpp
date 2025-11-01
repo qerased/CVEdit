@@ -8,6 +8,7 @@ int main (int argc, char *argv[])
 
     qRegisterMetaType<sort_mode>  ("SortMode");
     qRegisterMetaType<sort_scope> ("SortScope");
+    qRegisterMetaType<sort_axis>  ("SortAxis");
 
     main_window window;
     window.show ();
