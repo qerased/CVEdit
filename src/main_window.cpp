@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QGroupBox>
+#include <QScrollArea>
 #include <opencv2/core.hpp>
 
 #include "utils.h"
@@ -74,8 +75,16 @@ void main_window::create_filters_dock ()
                     QMainWindow::GroupedDragging |
                     QMainWindow::AnimatedDocks);
 
-    auto * w = new QWidget (dock_filters_);
+    auto * scroll = new QScrollArea (dock_filters_);
+    scroll->setWidgetResizable (true);
+    scroll->setFrameShape (QFrame::NoFrame);
+    scroll->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+    scroll->setVerticalScrollBarPolicy (Qt::ScrollBarAsNeeded);
+
+    auto * w = new QWidget (scroll);
     auto * v = new QVBoxLayout (w);
+    v->setContentsMargins (8, 8, 8, 8);
+    v->setSpacing (8);
 
     /// grayscale
     {
@@ -227,7 +236,8 @@ void main_window::create_filters_dock ()
 
     v->addStretch (1);
     w->setLayout (v);
-    dock_filters_->setWidget (w);
+    scroll->setWidget (w);
+    dock_filters_->setWidget (scroll);
     addDockWidget (Qt::RightDockWidgetArea, dock_filters_);
 }
 
