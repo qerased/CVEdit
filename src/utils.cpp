@@ -29,6 +29,10 @@ cv::Mat load_image_mat (const QString &path, QString *error)
         return {};
     }
 
+    /// TODO: support alpha channel fully
+    if (img.channels () == 4)
+        cv::cvtColor (img, img, cv::COLOR_BGRA2BGR);
+
     return img;
 }
 
