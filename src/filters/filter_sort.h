@@ -45,10 +45,10 @@ public:
 
 private:
     sort_mode mode_ {sort_mode::Luminosity};
-    sort_scope scope_ { sort_scope::Global };
+    sort_scope scope_ { sort_scope::Rows };
 
-    unsigned int chunk_ {0}; /// 0 == all, >0 = size of interval
-    unsigned int stride_ {0}; /// 0 == non-overlapping, >0 = step
+    unsigned int chunk_ {50}; /// 0 == all, >0 = size of interval
+    unsigned int stride_ {100}; /// 0 == non-overlapping, >0 = step
 
     void sort_global (cv::Mat & mat);
     void sort_rows (cv::Mat & mat);
