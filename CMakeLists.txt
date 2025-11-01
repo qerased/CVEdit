@@ -25,6 +25,10 @@ qt_add_executable(CVEdit
         src/filters/filter.h
         src/filters/filter.cpp
         src/filters/filter_grayscale.h
+        src/filters/filter_blur.h
+        src/filters/filter_canny.h
+        src/filters/filter_shake.h
+        src/filters/filter_sort.h
 )
 
 target_link_libraries(CVEdit PRIVATE Qt6::Widgets ${OpenCV_LIBS})

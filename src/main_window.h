@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QDockWidget>
+#include <QComboBox>
 #include <QSlider>
 
 #include "video_source.h"
@@ -12,6 +13,7 @@
 #include "filters/filter_canny.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_shake.h"
+#include "filters/filter_sort.h"
 
 class main_window : public QMainWindow
 {
@@ -40,6 +42,9 @@ private slots:
     void on_slider_canny2 (double val);
 
     void on_toggle_shake (bool on);
+
+    void on_toggle_sort (bool on);
+    void on_combo_sort (int idx);
 
 private:
     void create_ui ();
@@ -87,6 +92,10 @@ private:
 
     filter_shake * filter_shake_;
     QCheckBox * chk_shake_       = nullptr;
+
+    filter_sort * filter_sort_;
+    QCheckBox * chk_sort_         = nullptr;
+    QComboBox * combo_sort_       = nullptr;
 };
 
 

@@ -25,11 +25,13 @@ main_window::main_window (QWidget *parent)
     filter_blur_ = filter_chain_.add<filter_blur> ();
     filter_canny_ = filter_chain_.add<filter_canny> ();
     filter_shake_ = filter_chain_.add<filter_shake> ();
+    filter_sort_ = filter_chain_.add<filter_sort> ();
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
     filter_canny_->set_enabled (false);
     filter_shake_->set_enabled (false);
+    filter_sort_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -134,7 +136,7 @@ void main_window::create_filters_dock ()
         connect (slider_canny_thr2, &QSlider::valueChanged, this, &main_window::on_slider_canny2);
     }
 
-    /// glitch
+    /// shake
     {
         auto * box = new QGroupBox ("Shake");
         auto * h = new QHBoxLayout (box);
@@ -144,6 +146,28 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
         connect (chk_shake_, &QCheckBox::toggled, this, &main_window::on_toggle_shake);
+    }
+
+    /// sort
+    {
+        auto * box = new QGroupBox ("Sort");
+        auto * h = new QHBoxLayout (box);
+        chk_sort_ = new QCheckBox ("Enable", box);
+        chk_sort_->setChecked (false);
+        h->addWidget (chk_sort_);
+
+        combo_sort_ = new QComboBox (box);
+        combo_sort_->addItem ("Luminosity", QVariant::fromValue (sort_mode::Luminosity));
+        combo_sort_->addItem ("Red",        QVariant::fromValue (sort_mode::Red));
+        combo_sort_->addItem ("Green",      QVariant::fromValue (sort_mode::Green));
+        combo_sort_->addItem ("Blue",       QVariant::fromValue (sort_mode::Blue));
+        combo_sort_->addItem ("Hue",        QVariant::fromValue (sort_mode::Hue));
+        h->addWidget (combo_sort_);
+
+        box->setLayout (h);
+        v->addWidget (box);
+        connect (chk_sort_, &QCheckBox::toggled, this, &main_window::on_toggle_sort);
+        connect (combo_sort_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort);
     }
 
     v->addStretch (1);
@@ -435,5 +459,18 @@ void main_window::on_slider_canny2 (double val)
 void main_window::on_toggle_shake (bool on)
 {
     filter_shake_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_toggle_sort (bool on)
+{
+    filter_sort_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_combo_sort (int idx)
+{
+    QVariant data = combo_sort_->itemData (idx);
+    filter_sort_->set_mode (data.value<sort_mode> ());
     if (!is_live_) reprocess_and_show ();
 }
