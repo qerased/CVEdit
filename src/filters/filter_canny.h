@@ -13,7 +13,7 @@ public:
         if (mat.empty ()) return;
         cv::Mat edges;
         cv::Canny (mat, edges, thresh1, thresh2);
-        edges.copyTo (mat);
+        cv::cvtColor (edges, mat, cv::COLOR_GRAY2BGR);
     }
 
     void set_thr1 (double new_thr1)
