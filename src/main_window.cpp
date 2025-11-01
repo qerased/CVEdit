@@ -73,6 +73,16 @@ void main_window::bind_toggle (QCheckBox * chk, filter * f)
             });
 }
 
+void main_window::bind_slider (QSlider *s, std::function<void(int)> setter)
+{
+    connect(s, &QSlider::valueChanged, this,
+            [this, setter] (int v) {
+                setter (v);
+                if (!is_live_) reprocess_and_show ();
+            });
+}
+
+
 void main_window::create_filters_dock ()
 {
     dock_filters_ = new QDockWidget ("Filters", this);
@@ -126,7 +136,7 @@ void main_window::create_filters_dock ()
         v->addWidget (box);
 
         bind_toggle (chk_blur_, filter_blur_);
-        connect (slider_blur_, &QSlider::valueChanged, this, &main_window::on_slider_blur);
+        bind_slider (slider_blur_, [f = filter_blur_] (int v){ f->change_k_size (v); });
     }
 
     /// canny
@@ -153,8 +163,8 @@ void main_window::create_filters_dock ()
         v->addWidget (box);
 
         bind_toggle (chk_canny_, filter_canny_);
-        connect (slider_canny_thr1, &QSlider::valueChanged, this, &main_window::on_slider_canny1);
-        connect (slider_canny_thr2, &QSlider::valueChanged, this, &main_window::on_slider_canny2);
+        bind_slider (slider_canny_thr1, [f = filter_canny_] (int v) { f->set_thr1 (v); });
+        bind_slider (slider_canny_thr2, [f = filter_canny_] (int v) { f->set_thr2 (v); });
     }
 
     /// shake
@@ -493,24 +503,6 @@ void main_window::show_mat (const cv::Mat & mat)
 {
     current_pixmap_ = utils::mat_to_pixmap (mat);
     update_preview ();
-}
-
-void main_window::on_slider_blur (int val)
-{
-    filter_blur_->change_k_size (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_slider_canny1 (double val)
-{
-    filter_canny_->set_thr1 (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_slider_canny2 (double val)
-{
-    filter_canny_->set_thr2 (val);
-    if (!is_live_) reprocess_and_show ();
 }
 
 void main_window::on_combo_sort_mode (int idx)

@@ -34,11 +34,6 @@ private slots:
     void open_video_file ();
 
     /// filters
-    void on_slider_blur (int val);
-
-    void on_slider_canny1 (double val);
-    void on_slider_canny2 (double val);
-
     void on_combo_sort_mode  (int idx);
     void on_combo_sort_scope (int idx);
     void on_combo_sort_axis  (int idx);
@@ -61,6 +56,7 @@ private:
     void resizeEvent(QResizeEvent *event) override;
 
     void bind_toggle (QCheckBox * chk, filter * f);
+    void bind_slider (QSlider * s, std::function<void(int)> setter);
 
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
