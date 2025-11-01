@@ -22,8 +22,17 @@ public:
     {
         apply (mat);
     }
+
+    void set_num_order (int new_ord)
+    {
+        num_order_ = new_ord;
+    }
+
 private:
     bool enabled_ {true};
+    int num_order_{};
+
+    friend class filter_chain;
 };
 
 
@@ -43,6 +52,12 @@ public:
 
     void apply_all (cv::Mat& mat, frame_info & fi)
     {
+        std::ranges::sort (filters_, []
+        (const std::unique_ptr<filter> & a, const std::unique_ptr<filter> & b)
+        {
+            return a->num_order_ < b->num_order_;
+        });
+
         for (auto & f : filters_)
             if (f->enabled ())
                 f->apply(mat, fi);
