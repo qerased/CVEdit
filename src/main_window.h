@@ -6,6 +6,7 @@
 #include <QDockWidget>
 #include <QComboBox>
 #include <QSlider>
+#include <QSpinBox>
 
 #include "video_source.h"
 #include "filters/filter.h"
@@ -43,8 +44,12 @@ private slots:
 
     void on_toggle_shake (bool on);
 
-    void on_toggle_sort (bool on);
-    void on_combo_sort (int idx);
+    void on_toggle_sort      (bool on);
+    void on_combo_sort_mode  (int idx);
+    void on_combo_sort_scope (int idx);
+    void on_combo_sort_axis  (int idx);
+    void on_spin_sort_chunk  (int val);
+    void on_spin_sort_stride (int val);
 
 private:
     void create_ui ();
@@ -95,7 +100,11 @@ private:
 
     filter_sort * filter_sort_;
     QCheckBox * chk_sort_         = nullptr;
-    QComboBox * combo_sort_       = nullptr;
+    QComboBox * combo_sort_mode_  = nullptr;
+    QComboBox * combo_sort_scope_ = nullptr;
+    QComboBox * combo_sort_axis_  = nullptr;
+    QSpinBox  * spin_sort_chunk_  = nullptr;
+    QSpinBox  * spin_sort_stride_ = nullptr;
 };
 
 

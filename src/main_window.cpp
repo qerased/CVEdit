@@ -151,23 +151,54 @@ void main_window::create_filters_dock ()
     /// sort
     {
         auto * box = new QGroupBox ("Sort");
-        auto * h = new QHBoxLayout (box);
+        auto * h = new QVBoxLayout (box);
         chk_sort_ = new QCheckBox ("Enable", box);
         chk_sort_->setChecked (false);
         h->addWidget (chk_sort_);
 
-        combo_sort_ = new QComboBox (box);
-        combo_sort_->addItem ("Luminosity", QVariant::fromValue (sort_mode::Luminosity));
-        combo_sort_->addItem ("Red",        QVariant::fromValue (sort_mode::Red));
-        combo_sort_->addItem ("Green",      QVariant::fromValue (sort_mode::Green));
-        combo_sort_->addItem ("Blue",       QVariant::fromValue (sort_mode::Blue));
-        combo_sort_->addItem ("Hue",        QVariant::fromValue (sort_mode::Hue));
-        h->addWidget (combo_sort_);
+        combo_sort_mode_ = new QComboBox (box);
+        combo_sort_mode_->addItem ("Luminosity", QVariant::fromValue (sort_mode::Luminosity));
+        combo_sort_mode_->addItem ("Red",        QVariant::fromValue (sort_mode::Red));
+        combo_sort_mode_->addItem ("Green",      QVariant::fromValue (sort_mode::Green));
+        combo_sort_mode_->addItem ("Blue",       QVariant::fromValue (sort_mode::Blue));
+        combo_sort_mode_->addItem ("Hue",        QVariant::fromValue (sort_mode::Hue));
+        h->addWidget (combo_sort_mode_);
+
+        combo_sort_scope_ = new QComboBox (box);
+        combo_sort_scope_->addItem ("Global", QVariant::fromValue (sort_scope::Global));
+        combo_sort_scope_->addItem ("Rows", QVariant::fromValue (sort_scope::Rows));
+        combo_sort_scope_->addItem ("Cols", QVariant::fromValue (sort_scope::Cols));
+        h->addWidget (combo_sort_scope_);
+
+        combo_sort_axis_ = new QComboBox (box);
+        combo_sort_axis_->addItem ("Horizontal", QVariant::fromValue (sort_axis::Horizontal));
+        combo_sort_axis_->addItem ("Vertical", QVariant::fromValue (sort_axis::Vertical));
+        h->addWidget (combo_sort_axis_);
+
+        auto * layout_chunk = new QHBoxLayout ();
+        layout_chunk->addWidget (new QLabel ("Chunk size :", box));
+        spin_sort_chunk_ = new QSpinBox (box);
+        spin_sort_chunk_->setRange (0, 300);
+        spin_sort_chunk_->setValue (0);
+        layout_chunk->addWidget (spin_sort_chunk_);
+        h->addLayout (layout_chunk);
+
+        auto * layout_stride = new QHBoxLayout ();
+        layout_stride->addWidget (new QLabel ("Stride size :", box));
+        spin_sort_stride_ = new QSpinBox (box);
+        spin_sort_stride_->setRange (0, 300);
+        spin_sort_stride_->setValue (0);
+        layout_stride->addWidget (spin_sort_stride_);
+        h->addLayout (layout_stride);
 
         box->setLayout (h);
         v->addWidget (box);
         connect (chk_sort_, &QCheckBox::toggled, this, &main_window::on_toggle_sort);
-        connect (combo_sort_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort);
+        connect (combo_sort_mode_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_mode);
+        connect (combo_sort_scope_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_scope);
+        connect (combo_sort_axis_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_axis);
+        connect (spin_sort_chunk_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_chunk);
+        connect (spin_sort_stride_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_stride);
     }
 
     v->addStretch (1);
@@ -468,9 +499,35 @@ void main_window::on_toggle_sort (bool on)
     if (!is_live_) reprocess_and_show ();
 }
 
-void main_window::on_combo_sort (int idx)
+void main_window::on_combo_sort_mode (int idx)
 {
-    QVariant data = combo_sort_->itemData (idx);
+    QVariant data = combo_sort_mode_->itemData (idx);
     filter_sort_->set_mode (data.value<sort_mode> ());
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_combo_sort_scope (int idx)
+{
+    QVariant data = combo_sort_scope_->itemData (idx);
+    filter_sort_->set_scope (data.value<sort_scope> ());
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_combo_sort_axis (int idx)
+{
+    QVariant data = combo_sort_axis_->itemData (idx);
+    filter_sort_->set_axis (data.value<sort_axis> ());
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_spin_sort_chunk (int val)
+{
+    filter_sort_->set_chunk (val);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_spin_sort_stride (int val)
+{
+    filter_sort_->set_stride (val);
     if (!is_live_) reprocess_and_show ();
 }

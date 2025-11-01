@@ -46,13 +46,23 @@ public:
         stride_ = stride;
     }
 
+    void set_scope (const sort_scope scope)
+    {
+        scope_ = scope;
+    }
+
+    void set_axis (const sort_axis axis)
+    {
+        axis_ = axis;
+    }
+
 private:
     sort_mode mode_ {sort_mode::Luminosity};
-    sort_scope scope_ { sort_scope::Rows };
-    sort_axis axis_ { sort_axis::Vertical };
+    sort_scope scope_ { sort_scope::Global };
+    sort_axis axis_ { sort_axis::Horizontal };
 
-    unsigned int chunk_ {5}; /// 0 == all, >0 = size of interval
-    unsigned int stride_ {10}; /// 0 == non-overlapping, >0 = step
+    unsigned int chunk_ {0}; /// 0 == all, >0 = size of interval
+    unsigned int stride_ {0}; /// 0 == non-overlapping, >0 = step
 
     void sort_global (cv::Mat & mat);
     void sort_rows (cv::Mat & mat);
