@@ -23,9 +23,9 @@ main_window::main_window (QWidget *parent)
 
     filter_grayscale_ = filter_chain_.add<filter_grayscale> ();
     filter_blur_ = filter_chain_.add<filter_blur> ();
-    filter_canny_ = filter_chain_.add<filter_canny> ();
     filter_shake_ = filter_chain_.add<filter_shake> ();
     filter_sort_ = filter_chain_.add<filter_sort> ();
+    filter_canny_ = filter_chain_.add<filter_canny> (); /// TODO: add smart ordering and prevent canny before sort
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
