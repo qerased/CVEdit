@@ -6,7 +6,8 @@ int main (int argc, char *argv[])
     QApplication app (argc, argv);
     QApplication::setApplicationName ("CVEdit");
 
-    qRegisterMetaType<sort_mode> ("SortMode");
+    qRegisterMetaType<sort_mode>  ("SortMode");
+    qRegisterMetaType<sort_scope> ("SortScope");
 
     main_window window;
     window.show ();

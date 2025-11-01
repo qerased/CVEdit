@@ -7,6 +7,9 @@
 enum class sort_mode { Luminosity, Red, Green, Blue, Hue};
 Q_DECLARE_METATYPE (sort_mode);
 
+enum class sort_scope { Global, Rows, Cols};
+Q_DECLARE_METATYPE (sort_scope);
+
 class filter_sort : public filter
 {
 public:
@@ -33,8 +36,23 @@ public:
     {
         mode_ = mode;
     }
+
+    void set_chunk (const unsigned int chunk)
+    {
+        chunk_ = chunk;
+    }
+
+    void set_stride (const unsigned int stride)
+    {
+        stride_ = stride;
+    }
+
 private:
     sort_mode mode_ {sort_mode::Luminosity};
+    sort_scope scope_ { sort_scope::Global };
+
+    unsigned int chunk_ {0}; /// 0 == all, >0 = size of interval
+    unsigned int stride_ {0}; /// 0 == non-overlapping, >0 = step
 
     void counting_scatter (const uint8_t * keys, int bins,
                            const cv::Mat & src, cv::Mat & dst) const;
