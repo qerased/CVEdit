@@ -45,7 +45,7 @@ public:
 
 private:
     sort_mode mode_ {sort_mode::Luminosity};
-    sort_scope scope_ { sort_scope::Rows };
+    sort_scope scope_ { sort_scope::Cols };
 
     unsigned int chunk_ {50}; /// 0 == all, >0 = size of interval
     unsigned int stride_ {100}; /// 0 == non-overlapping, >0 = step

@@ -123,8 +123,10 @@ void filter_sort::sort_rows (cv::Mat &mat)
     }
 }
 
-/// temp
-void filter_sort::sort_cols (cv::Mat &mat)
+void filter_sort::sort_cols (cv::Mat & mat)
 {
-    sort_global (mat);
+    cv::Mat rot;
+    cv::rotate (mat, rot, cv::ROTATE_90_CLOCKWISE);
+    sort_rows (rot);
+    cv::rotate (rot, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
 }
