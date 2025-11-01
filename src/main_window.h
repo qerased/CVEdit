@@ -13,6 +13,7 @@
 #include "filters/filter_blur.h"
 #include "filters/filter_canny.h"
 #include "filters/filter_grayscale.h"
+#include "filters/filter_kuwahara.h"
 #include "filters/filter_shake.h"
 #include "filters/filter_sort.h"
 
@@ -50,6 +51,9 @@ private slots:
     void on_combo_sort_axis  (int idx);
     void on_spin_sort_chunk  (int val);
     void on_spin_sort_stride (int val);
+
+    void on_toggle_kuwahara (bool on);
+    void on_spin_kuwahara   (int val);
 
 private:
     void create_ui ();
@@ -105,6 +109,10 @@ private:
     QComboBox * combo_sort_axis_  = nullptr;
     QSpinBox  * spin_sort_chunk_  = nullptr;
     QSpinBox  * spin_sort_stride_ = nullptr;
+
+    filter_kuwahara * filter_kuwahara_;
+    QCheckBox * chk_kuwahara_    = nullptr;
+    QSpinBox  * spin_kuwahara_   = nullptr;
 };
 
 

@@ -26,12 +26,14 @@ main_window::main_window (QWidget *parent)
     filter_shake_ = filter_chain_.add<filter_shake> ();
     filter_sort_ = filter_chain_.add<filter_sort> ();
     filter_canny_ = filter_chain_.add<filter_canny> (); /// TODO: add smart ordering and prevent canny before sort
+    filter_kuwahara_ = filter_chain_.add<filter_kuwahara> ();
 
     filter_grayscale_->set_enabled (false);
     filter_blur_->set_enabled (false);
     filter_canny_->set_enabled (false);
     filter_shake_->set_enabled (false);
     filter_sort_->set_enabled (false);
+    filter_kuwahara_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -199,6 +201,28 @@ void main_window::create_filters_dock ()
         connect (combo_sort_axis_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_axis);
         connect (spin_sort_chunk_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_chunk);
         connect (spin_sort_stride_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_stride);
+    }
+
+    /// kuwahara
+    {
+        auto * box = new QGroupBox ("Kuwahara");
+        auto * h = new QVBoxLayout (box);
+        chk_kuwahara_ = new QCheckBox ("Enable", box);
+        chk_kuwahara_->setChecked (false);
+        h->addWidget (chk_kuwahara_);
+
+        auto * layout_k = new QHBoxLayout ();
+        layout_k->addWidget (new QLabel ("Window size :", box));
+        spin_kuwahara_ = new QSpinBox (box);
+        spin_kuwahara_->setRange (3, 21);
+        spin_kuwahara_->setValue (3);
+        layout_k->addWidget (spin_kuwahara_);
+        h->addLayout (layout_k);
+
+        box->setLayout (h);
+        v->addWidget (box);
+        connect (chk_kuwahara_, &QCheckBox::toggled, this, &main_window::on_toggle_kuwahara);
+        connect (spin_kuwahara_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_kuwahara);
     }
 
     v->addStretch (1);
@@ -529,5 +553,17 @@ void main_window::on_spin_sort_chunk (int val)
 void main_window::on_spin_sort_stride (int val)
 {
     filter_sort_->set_stride (val);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_toggle_kuwahara (bool on)
+{
+    filter_kuwahara_->set_enabled (on);
+    if (!is_live_) reprocess_and_show ();
+}
+
+void main_window::on_spin_kuwahara (int val)
+{
+    filter_kuwahara_->set_k_size (val);
     if (!is_live_) reprocess_and_show ();
 }
