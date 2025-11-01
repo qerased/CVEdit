@@ -22,8 +22,8 @@ public:
             case sort_mode::Red:   sort_by_channel (mat, 2, 256); break;
             case sort_mode::Green: sort_by_channel (mat, 1, 256); break;
             case sort_mode::Blue:  sort_by_channel (mat, 0, 256); break;
-            case sort_mode::Hue:
-            case sort_mode::Luminosity:
+            case sort_mode::Hue:   sort_by_hue (mat); break;
+            case sort_mode::Luminosity: sort_by_luma(mat); break;
             default:
                 break;
         }
@@ -40,6 +40,8 @@ private:
                            const cv::Mat & src, cv::Mat & dst) const;
 
     void sort_by_channel (cv::Mat & mat, int ch, int bins) const;
+    void sort_by_luma (cv::Mat & mat) const;
+    void sort_by_hue  (cv::Mat & mat) const;
 };
 
 #endif //CVEDIT_FILTER_SORT_H
