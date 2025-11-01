@@ -20,15 +20,11 @@ public:
     {
         if (mat.empty ()) return;
 
-        switch (mode_)
+        switch (scope_)
         {
-            case sort_mode::Red:   sort_by_channel (mat, 2, 256); break;
-            case sort_mode::Green: sort_by_channel (mat, 1, 256); break;
-            case sort_mode::Blue:  sort_by_channel (mat, 0, 256); break;
-            case sort_mode::Hue:   sort_by_hue (mat); break;
-            case sort_mode::Luminosity: sort_by_luma(mat); break;
-            default:
-                break;
+            case sort_scope::Global: sort_global (mat); break;
+            case sort_scope::Rows:   sort_rows (mat); break;
+            case sort_scope::Cols:   sort_cols (mat); break;
         }
     }
 
@@ -54,12 +50,24 @@ private:
     unsigned int chunk_ {0}; /// 0 == all, >0 = size of interval
     unsigned int stride_ {0}; /// 0 == non-overlapping, >0 = step
 
-    void counting_scatter (const uint8_t * keys, int bins,
-                           const cv::Mat & src, cv::Mat & dst) const;
+    void sort_global (cv::Mat & mat);
+    void sort_rows (cv::Mat & mat);
+    void sort_cols (cv::Mat & mat);
 
-    void sort_by_channel (cv::Mat & mat, int ch, int bins) const;
-    void sort_by_luma (cv::Mat & mat) const;
-    void sort_by_hue  (cv::Mat & mat) const;
+    int key_bins () const { return mode_ == sort_mode::Hue ? 180 : 256; }
+    uint8_t pixel_key_bgr (const cv::Vec3b & p) const
+    {
+        switch (mode_)
+        {
+            case sort_mode::Red:   return p[2];
+            case sort_mode::Green: return p[1];
+            case sort_mode::Blue:  return p[0];
+            case sort_mode::Luminosity:
+                return static_cast<uint8_t> (0.299 * p[2] + 0.587 * p[1] + 0.114 * p[0]);
+            case sort_mode::Hue:;
+        }
+        return 0;
+    }
 };
 
 #endif //CVEDIT_FILTER_SORT_H
