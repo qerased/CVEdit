@@ -185,17 +185,13 @@ void main_window::create_filters_dock ()
         auto * h = new QVBoxLayout (box);
         h->addLayout (get_chk_ord_layout (box, filter_kuwahara_, chk_kuwahara_, spin_kuwahara_ord_));
 
-        auto * layout_k = new QHBoxLayout ();
-        layout_k->addWidget (new QLabel ("Window size :", box));
-        spin_kuwahara_ = new QSpinBox (box);
-        spin_kuwahara_->setRange (3, 21);
-        spin_kuwahara_->setValue (3);
-        layout_k->addWidget (spin_kuwahara_);
-        h->addLayout (layout_k);
+        h->addLayout (get_spin (box, "Window size :", spin_kuwahara_,
+            3, 3, 21,
+            [f = filter_kuwahara_] (int v) { f->set_k_size (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
-        bind_spin (spin_kuwahara_, [f = filter_kuwahara_] (int v) { f->set_k_size (v); });
+    }
     }
 
     v->addStretch (1);
