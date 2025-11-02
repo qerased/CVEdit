@@ -78,3 +78,21 @@ QHBoxLayout * main_window::get_slider (
 
     return layout;
 }
+
+QHBoxLayout *main_window::get_spin (
+    QGroupBox *box, QString label, QSpinBox *spin,
+    int base_val, int min_val, int max_val,
+    std::function<void(int)> spin_f)
+{
+    auto * layout = new QHBoxLayout ();
+    layout->addWidget (new QLabel (label, box));
+
+    spin = new QSpinBox (box);
+    spin->setRange (min_val, max_val);
+    spin->setValue (base_val);
+    layout->addWidget (spin);
+
+    bind_spin (spin, spin_f);
+
+    return layout;
+}

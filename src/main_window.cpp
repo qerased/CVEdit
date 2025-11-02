@@ -164,29 +164,19 @@ void main_window::create_filters_dock ()
         combo_sort_axis_->addItem ("Vertical", QVariant::fromValue (sort_axis::Vertical));
         h->addWidget (combo_sort_axis_);
 
-        auto * layout_chunk = new QHBoxLayout ();
-        layout_chunk->addWidget (new QLabel ("Chunk size :", box));
-        spin_sort_chunk_ = new QSpinBox (box);
-        spin_sort_chunk_->setRange (0, 300);
-        spin_sort_chunk_->setValue (0);
-        layout_chunk->addWidget (spin_sort_chunk_);
-        h->addLayout (layout_chunk);
+        h->addLayout (get_spin (box, "Chunk size:", spin_sort_chunk_,
+            0, 0, 300,
+            [f = filter_sort_] (int v) { f->set_chunk (v); }));
 
-        auto * layout_stride = new QHBoxLayout ();
-        layout_stride->addWidget (new QLabel ("Stride size :", box));
-        spin_sort_stride_ = new QSpinBox (box);
-        spin_sort_stride_->setRange (0, 300);
-        spin_sort_stride_->setValue (0);
-        layout_stride->addWidget (spin_sort_stride_);
-        h->addLayout (layout_stride);
+        h->addLayout (get_spin (box, "Stride size:", spin_sort_chunk_,
+            0, 0, 300,
+            [f = filter_sort_] (int v) { f->set_stride (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
         bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });
         bind_combo (combo_sort_scope_, [f = filter_sort_] (const QVariant & v) { f->set_scope (v.value<sort_scope> ()); });
         bind_combo (combo_sort_axis_, [f = filter_sort_] (const QVariant & v) { f->set_axis (v.value<sort_axis> ()); });
-        bind_spin (spin_sort_chunk_, [f = filter_sort_] (int v){ f->set_chunk (v); });
-        bind_spin (spin_sort_stride_, [f = filter_sort_] (int v) { f->set_stride (v); });
     }
 
     /// kuwahara

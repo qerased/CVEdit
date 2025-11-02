@@ -58,6 +58,10 @@ private:
                               int base_val, int min_val, int max_val,
                               std::function<void(int)> slider_f);
 
+    QHBoxLayout * get_spin (QGroupBox * box, QString label, QSpinBox * spin,
+                            int base_val, int min_val, int max_val,
+                            std::function<void(int)> spin_f);
+
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
 
