@@ -60,3 +60,21 @@ QHBoxLayout * main_window::get_chk_ord_layout (QGroupBox * box, filter * f, QChe
     gen_layout->addLayout (ord_layout);
     return gen_layout;
 }
+
+QHBoxLayout * main_window::get_slider (
+    QGroupBox * box, QString label, QSlider * slider,
+    int base_val, int min_val, int max_val,
+    std::function<void(int)> slider_f)
+{
+    QHBoxLayout * layout = new QHBoxLayout ();
+    layout->addWidget (new QLabel (label, box));
+
+    slider = new QSlider (Qt::Horizontal, box);
+    slider->setValue (base_val);
+    slider->setMinimum (min_val);
+    slider->setMaximum (max_val);
+    bind_slider (slider, slider_f);
+    layout->addWidget (slider);
+
+    return layout;
+}

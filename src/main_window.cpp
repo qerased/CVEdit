@@ -104,16 +104,12 @@ void main_window::create_filters_dock ()
         auto * h = new QVBoxLayout (box);
         h->addLayout (get_chk_ord_layout (box, filter_blur_, chk_blur_, spin_blur_ord_));
 
-        slider_blur_ = new QSlider (Qt::Horizontal, box);
-        slider_blur_->setValue (5);
-        slider_blur_->setMinimum (1);
-        slider_blur_->setMaximum (100);
-        h->addWidget (slider_blur_);
+        h->addLayout (get_slider (box, "Intensity :", slider_blur_,
+              5, 1, 100,
+              [f = filter_blur_] (int v) {f->change_k_size (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
-
-        bind_slider (slider_blur_, [f = filter_blur_] (int v){ f->change_k_size (v); });
     }
 
     /// canny
@@ -122,23 +118,16 @@ void main_window::create_filters_dock ()
         auto * h = new QVBoxLayout (box);
         h->addLayout (get_chk_ord_layout (box, filter_canny_, chk_canny_, spin_canny_ord_));
 
-        slider_canny_thr1 = new QSlider (Qt::Horizontal, box);
-        slider_canny_thr1->setMinimum (1);
-        slider_canny_thr1->setMaximum (200);
-        slider_canny_thr1->setValue (100);
-        h->addWidget (slider_canny_thr1);
+        h->addLayout (get_slider (box, "Threshold 1:", slider_canny_thr1,
+            100, 1, 200,
+            [f = filter_canny_] (int v){ f->set_thr1 (v); }));
 
-        slider_canny_thr2 = new QSlider (Qt::Horizontal, box);
-        slider_canny_thr2->setMinimum (1);
-        slider_canny_thr2->setMaximum (200);
-        slider_canny_thr2->setValue (200);
-        h->addWidget (slider_canny_thr2);
+        h->addLayout (get_slider (box, "Threshold 2:", slider_canny_thr2,
+            200, 1, 200,
+            [f = filter_canny_] (int v){ f->set_thr2 (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
-
-        bind_slider (slider_canny_thr1, [f = filter_canny_] (int v) { f->set_thr1 (v); });
-        bind_slider (slider_canny_thr2, [f = filter_canny_] (int v) { f->set_thr2 (v); });
     }
 
     /// shake

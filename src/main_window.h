@@ -54,6 +54,9 @@ private:
     void bind_combo (QComboBox * c, std::function<void(const QVariant &)> setter);
 
     QHBoxLayout * get_chk_ord_layout (QGroupBox * box, filter * f, QCheckBox * chk, QSpinBox * spin);
+    QHBoxLayout * get_slider (QGroupBox * box, QString label, QSlider * slider,
+                              int base_val, int min_val, int max_val,
+                              std::function<void(int)> slider_f);
 
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
