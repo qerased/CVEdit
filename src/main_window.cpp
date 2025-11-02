@@ -27,6 +27,7 @@ main_window::main_window (QWidget *parent)
     filter_sort_ = filter_chain_.add<filter_sort> ();
     filter_canny_ = filter_chain_.add<filter_canny> (); /// TODO: add smart ordering and prevent canny before sort
     filter_kuwahara_ = filter_chain_.add<filter_kuwahara> ();
+    filter_bloom_ = filter_chain_.add<filter_bloom> ();
 
     create_filters_dock ();
 
@@ -36,6 +37,7 @@ main_window::main_window (QWidget *parent)
     filter_shake_->set_enabled (false);
     filter_sort_->set_enabled (false);
     filter_kuwahara_->set_enabled (false);
+    filter_bloom_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -192,6 +194,23 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
     }
+
+    /// edgeglow
+    {
+        auto * box = new QGroupBox ("Bloom");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_bloom_, chk_bloom_, spin_bloom_ord_));
+        h->addLayout (get_slider (box, "Threshold :", slider_bloom_thresh_, 70, 0, 100,
+            [f = filter_bloom_] (int v) { f->set_thresh (v / 100.); }));
+
+        h->addLayout (get_slider (box, "Radius :", slider_bloom_radius_, 10, 1, 30,
+            [f = filter_bloom_] (int v) { f->set_radius (v); }));
+
+        h->addLayout (get_slider (box, "Strength :", slider_bloom_coeff_, 80, 0, 100,
+            [f = filter_bloom_] (int v) { f->set_coeff (v / 100.); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
     }
 
     v->addStretch (1);

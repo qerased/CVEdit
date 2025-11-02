@@ -14,6 +14,7 @@
 #include "filters/filter.h"
 #include "filters/filter_blur.h"
 #include "filters/filter_canny.h"
+#include "filters/filter_bloom.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_kuwahara.h"
 #include "filters/filter_shake.h"
@@ -113,6 +114,13 @@ private:
     QCheckBox * chk_kuwahara_    = nullptr;
     QSpinBox  * spin_kuwahara_   = nullptr;
     QSpinBox  * spin_kuwahara_ord_ = nullptr;
+
+    filter_bloom * filter_bloom_;
+    QCheckBox * chk_bloom_      = nullptr;
+    QSpinBox  * spin_bloom_ord_ = nullptr;
+    QSlider   * slider_bloom_thresh_ = nullptr;
+    QSlider   * slider_bloom_coeff_  = nullptr;
+    QSlider   * slider_bloom_radius_ = nullptr;
 };
 
 
