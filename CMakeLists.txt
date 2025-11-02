@@ -16,6 +16,7 @@ qt_add_executable(CVEdit
         src/main.cpp
         src/main_window.h
         src/main_window.cpp
+        src/main_window_helpers.cpp
         src/utils.h
         src/utils.cpp
         src/video_source.h
