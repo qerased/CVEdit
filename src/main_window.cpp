@@ -82,6 +82,27 @@ void main_window::bind_slider (QSlider *s, std::function<void(int)> setter)
             });
 }
 
+void main_window::bind_spin (QSpinBox *s, std::function<void(int)> setter)
+{
+    connect(s, &QSpinBox::valueChanged, this,
+        [this, setter](int v)
+        {
+            setter (v);
+            if (!is_live_) reprocess_and_show ();
+        });
+}
+
+void main_window::bind_combo (QComboBox * c, std::function<void(const QVariant &)> setter)
+{
+    connect (c, qOverload<int> (&QComboBox::currentIndexChanged), this,
+        [this, c, setter] (int idx)
+        {
+            setter (c->itemData (idx));
+            if (!is_live_) reprocess_and_show ();
+        });
+}
+
+
 
 void main_window::create_filters_dock ()
 {
@@ -225,11 +246,11 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
         bind_toggle (chk_sort_, filter_sort_);
-        connect (combo_sort_mode_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_mode);
-        connect (combo_sort_scope_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_scope);
-        connect (combo_sort_axis_, QOverload<int>::of (&QComboBox::currentIndexChanged), this, &main_window::on_combo_sort_axis);
-        connect (spin_sort_chunk_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_chunk);
-        connect (spin_sort_stride_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_sort_stride);
+        bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });
+        bind_combo (combo_sort_scope_, [f = filter_sort_] (const QVariant & v) { f->set_scope (v.value<sort_scope> ()); });
+        bind_combo (combo_sort_axis_, [f = filter_sort_] (const QVariant & v) { f->set_axis (v.value<sort_axis> ()); });
+        bind_spin (spin_sort_chunk_, [f = filter_sort_] (int v){ f->set_chunk (v); });
+        bind_spin (spin_sort_stride_, [f = filter_sort_] (int v) { f->set_stride (v); });
     }
 
     /// kuwahara
@@ -251,7 +272,7 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
         bind_toggle (chk_kuwahara_, filter_kuwahara_);
-        connect (spin_kuwahara_, QOverload<int>::of (&QSpinBox::valueChanged), this, &main_window::on_spin_kuwahara);
+        bind_spin (spin_kuwahara_, [f = filter_kuwahara_] (int v) { f->set_k_size (v); });
     }
 
     v->addStretch (1);
@@ -503,43 +524,4 @@ void main_window::show_mat (const cv::Mat & mat)
 {
     current_pixmap_ = utils::mat_to_pixmap (mat);
     update_preview ();
-}
-
-void main_window::on_combo_sort_mode (int idx)
-{
-    QVariant data = combo_sort_mode_->itemData (idx);
-    filter_sort_->set_mode (data.value<sort_mode> ());
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_combo_sort_scope (int idx)
-{
-    QVariant data = combo_sort_scope_->itemData (idx);
-    filter_sort_->set_scope (data.value<sort_scope> ());
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_combo_sort_axis (int idx)
-{
-    QVariant data = combo_sort_axis_->itemData (idx);
-    filter_sort_->set_axis (data.value<sort_axis> ());
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_spin_sort_chunk (int val)
-{
-    filter_sort_->set_chunk (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_spin_sort_stride (int val)
-{
-    filter_sort_->set_stride (val);
-    if (!is_live_) reprocess_and_show ();
-}
-
-void main_window::on_spin_kuwahara (int val)
-{
-    filter_kuwahara_->set_k_size (val);
-    if (!is_live_) reprocess_and_show ();
 }
