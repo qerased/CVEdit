@@ -1,10 +1,12 @@
 #ifndef CVEDIT_MAIN_WINDOW_H
 #define CVEDIT_MAIN_WINDOW_H
+#include <qboxlayout.h>
 #include <QMainWindow>
 #include <QLabel>
 #include <QCheckBox>
 #include <QDockWidget>
 #include <QComboBox>
+#include <QGroupBox>
 #include <QSlider>
 #include <QSpinBox>
 
@@ -51,6 +53,8 @@ private:
     void bind_spin (QSpinBox * s, std::function<void(int)> setter);
     void bind_combo (QComboBox * c, std::function<void(const QVariant &)> setter);
 
+    QHBoxLayout * get_chk_ord_layout (QGroupBox * box, filter * f, QCheckBox * chk, QSpinBox * spin);
+
     QLabel * preview_label_ = nullptr;
     QPixmap current_pixmap_;
 
@@ -72,18 +76,22 @@ private:
 
     filter_grayscale * filter_grayscale_;
     QCheckBox * chk_grayscale_  = nullptr;
+    QSpinBox *  spin_grayscale_ord_ = nullptr;
 
     filter_blur * filter_blur_;
     QCheckBox * chk_blur_       = nullptr;
     QSlider * slider_blur_      = nullptr;
+    QSpinBox * spin_blur_ord_   = nullptr;
 
     filter_canny * filter_canny_;
     QCheckBox * chk_canny_       = nullptr;
     QSlider * slider_canny_thr1  = nullptr;
     QSlider * slider_canny_thr2  = nullptr;
+    QSpinBox * spin_canny_ord_   = nullptr;
 
     filter_shake * filter_shake_;
     QCheckBox * chk_shake_       = nullptr;
+    QSpinBox * spin_shake_ord_   = nullptr;
 
     filter_sort * filter_sort_;
     QCheckBox * chk_sort_         = nullptr;
@@ -92,10 +100,12 @@ private:
     QComboBox * combo_sort_axis_  = nullptr;
     QSpinBox  * spin_sort_chunk_  = nullptr;
     QSpinBox  * spin_sort_stride_ = nullptr;
+    QSpinBox  * spin_sort_ord_   = nullptr;
 
     filter_kuwahara * filter_kuwahara_;
     QCheckBox * chk_kuwahara_    = nullptr;
     QSpinBox  * spin_kuwahara_   = nullptr;
+    QSpinBox  * spin_kuwahara_ord_ = nullptr;
 };
 
 

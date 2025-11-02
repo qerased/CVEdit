@@ -73,7 +73,7 @@ void main_window::bind_toggle (QCheckBox * chk, filter * f)
             });
 }
 
-void main_window::bind_slider (QSlider *s, std::function<void(int)> setter)
+void main_window::bind_slider (QSlider * s, std::function<void(int)> setter)
 {
     connect(s, &QSlider::valueChanged, this,
             [this, setter] (int v) {
@@ -82,7 +82,7 @@ void main_window::bind_slider (QSlider *s, std::function<void(int)> setter)
             });
 }
 
-void main_window::bind_spin (QSpinBox *s, std::function<void(int)> setter)
+void main_window::bind_spin (QSpinBox * s, std::function<void(int)> setter)
 {
     connect(s, &QSpinBox::valueChanged, this,
         [this, setter](int v)
@@ -102,7 +102,28 @@ void main_window::bind_combo (QComboBox * c, std::function<void(const QVariant &
         });
 }
 
+QHBoxLayout * main_window::get_chk_ord_layout (QGroupBox * box, filter * f, QCheckBox * chk, QSpinBox * spin)
+{
+    auto * gen_layout = new QHBoxLayout ();
 
+    chk = new QCheckBox ("Enable", box);
+    chk->setChecked (false);
+    bind_toggle (chk, f);
+
+    gen_layout->addWidget (chk);
+
+    auto * ord_layout = new QHBoxLayout ();
+    ord_layout->addWidget (new QLabel ("Order :", box));
+    spin = new QSpinBox (box);
+    spin->setRange (0, 300);
+    spin->setValue (0);
+    bind_spin (spin, [fil = f] (int o) { fil->set_num_order (o); });
+
+    ord_layout->addWidget (spin);
+
+    gen_layout->addLayout (ord_layout);
+    return gen_layout;
+}
 
 void main_window::create_filters_dock ()
 {
@@ -131,21 +152,18 @@ void main_window::create_filters_dock ()
     {
         auto * box = new QGroupBox ("Grayscale");
         auto * h = new QHBoxLayout (box);
-        chk_grayscale_ = new QCheckBox ("Enable", box);
-        chk_grayscale_->setChecked (false);
-        h->addWidget (chk_grayscale_);
+
+        h->addLayout (get_chk_ord_layout (box, filter_grayscale_, chk_grayscale_, spin_grayscale_ord_));
+
         box->setLayout (h);
         v->addWidget (box);
-        bind_toggle (chk_grayscale_, filter_grayscale_);
     }
 
     /// blur
     {
         auto * box = new QGroupBox ("Gaussian Blur");
-        auto * h = new QHBoxLayout (box);
-        chk_blur_ = new QCheckBox ("Enable", box);
-        chk_blur_->setChecked (false);
-        h->addWidget (chk_blur_);
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_blur_, chk_blur_, spin_blur_ord_));
 
         slider_blur_ = new QSlider (Qt::Horizontal, box);
         slider_blur_->setValue (5);
@@ -156,17 +174,14 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
 
-        bind_toggle (chk_blur_, filter_blur_);
         bind_slider (slider_blur_, [f = filter_blur_] (int v){ f->change_k_size (v); });
     }
 
     /// canny
     {
         auto * box = new QGroupBox ("Canny");
-        auto * h = new QHBoxLayout (box);
-        chk_canny_ = new QCheckBox ("Enable", box);
-        chk_canny_->setChecked (false);
-        h->addWidget (chk_canny_);
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_canny_, chk_canny_, spin_canny_ord_));
 
         slider_canny_thr1 = new QSlider (Qt::Horizontal, box);
         slider_canny_thr1->setMinimum (1);
@@ -183,7 +198,6 @@ void main_window::create_filters_dock ()
         box->setLayout (h);
         v->addWidget (box);
 
-        bind_toggle (chk_canny_, filter_canny_);
         bind_slider (slider_canny_thr1, [f = filter_canny_] (int v) { f->set_thr1 (v); });
         bind_slider (slider_canny_thr2, [f = filter_canny_] (int v) { f->set_thr2 (v); });
     }
@@ -192,21 +206,16 @@ void main_window::create_filters_dock ()
     {
         auto * box = new QGroupBox ("Shake");
         auto * h = new QHBoxLayout (box);
-        chk_shake_ = new QCheckBox ("Enable", box);
-        chk_shake_->setChecked (false);
-        h->addWidget (chk_shake_);
+        h->addLayout (get_chk_ord_layout (box, filter_shake_, chk_shake_, spin_shake_ord_));
         box->setLayout (h);
         v->addWidget (box);
-        bind_toggle (chk_shake_, filter_shake_);
     }
 
     /// sort
     {
         auto * box = new QGroupBox ("Sort");
         auto * h = new QVBoxLayout (box);
-        chk_sort_ = new QCheckBox ("Enable", box);
-        chk_sort_->setChecked (false);
-        h->addWidget (chk_sort_);
+        h->addLayout (get_chk_ord_layout (box, filter_sort_, chk_sort_, spin_sort_ord_));
 
         combo_sort_mode_ = new QComboBox (box);
         combo_sort_mode_->addItem ("Luminosity", QVariant::fromValue (sort_mode::Luminosity));
@@ -245,7 +254,6 @@ void main_window::create_filters_dock ()
 
         box->setLayout (h);
         v->addWidget (box);
-        bind_toggle (chk_sort_, filter_sort_);
         bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });
         bind_combo (combo_sort_scope_, [f = filter_sort_] (const QVariant & v) { f->set_scope (v.value<sort_scope> ()); });
         bind_combo (combo_sort_axis_, [f = filter_sort_] (const QVariant & v) { f->set_axis (v.value<sort_axis> ()); });
@@ -257,9 +265,7 @@ void main_window::create_filters_dock ()
     {
         auto * box = new QGroupBox ("Kuwahara");
         auto * h = new QVBoxLayout (box);
-        chk_kuwahara_ = new QCheckBox ("Enable", box);
-        chk_kuwahara_->setChecked (false);
-        h->addWidget (chk_kuwahara_);
+        h->addLayout (get_chk_ord_layout (box, filter_kuwahara_, chk_kuwahara_, spin_kuwahara_ord_));
 
         auto * layout_k = new QHBoxLayout ();
         layout_k->addWidget (new QLabel ("Window size :", box));
@@ -271,7 +277,6 @@ void main_window::create_filters_dock ()
 
         box->setLayout (h);
         v->addWidget (box);
-        bind_toggle (chk_kuwahara_, filter_kuwahara_);
         bind_spin (spin_kuwahara_, [f = filter_kuwahara_] (int v) { f->set_k_size (v); });
     }
 
