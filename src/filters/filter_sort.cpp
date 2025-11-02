@@ -73,7 +73,7 @@ void filter_sort::sort_rows (cv::Mat &mat)
     const unsigned int h = mat.rows;
 
     const unsigned int chunk = chunk_ > 0 ? chunk_ : w;
-    const unsigned int stride = stride_ > 0 ? stride_ : w;
+    const unsigned int stride = stride_ > 0 && chunk_ > 0 ? stride_ : w;
 
     std::vector<uint8_t> keys;
     keys.reserve (chunk);
