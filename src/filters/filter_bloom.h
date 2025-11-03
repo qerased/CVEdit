@@ -26,6 +26,8 @@ public:
         cv::Mat glow_rgb;
         cv::cvtColor (glow, glow_rgb, cv::COLOR_GRAY2BGR);
 
+        cv::multiply (glow_rgb, glow_color, glow_rgb);
+
         cv::Mat result;
         cv::addWeighted (srcf, 1.0, glow_rgb, coeff, 0.0, result);
 
@@ -50,10 +52,17 @@ public:
         radius = new_rad;
     }
 
+    void set_bloom_color (cv::Scalar new_col)
+    {
+        glow_color = new_col;
+    }
+
 private:
     float thresh = 0.7;
     float radius = 10.;
     float coeff = 0.8;
+
+    cv::Scalar glow_color {1., 0.5, 0.};
 };
 
 #endif //CVEDIT_FILTER_EDGEGLOW_H

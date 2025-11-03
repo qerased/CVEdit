@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QDockWidget>
 #include <QComboBox>
+#include <QPushButton>
 #include <QGroupBox>
 #include <QSlider>
 #include <QSpinBox>
@@ -129,6 +130,8 @@ private:
     QSlider   * slider_bloom_thresh_ = nullptr;
     QSlider   * slider_bloom_coeff_  = nullptr;
     QSlider   * slider_bloom_radius_ = nullptr;
+    QPushButton * btn_bloom_color_   = nullptr;
+    QLabel    * label_bloom_color_   = nullptr;
 };
 
 

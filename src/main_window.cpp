@@ -9,6 +9,8 @@
 #include <QGroupBox>
 #include <QScrollArea>
 #include <QToolBar>
+#include <QColor>
+#include <QColorDialog>
 #include <opencv2/core.hpp>
 
 #include "utils.h"
@@ -212,6 +214,29 @@ void main_window::create_filters_dock ()
 
         h->addLayout (get_slider (box, "Strength :", slider_bloom_coeff_, 80, 0, 100,
             [f = filter_bloom_] (int v) { f->set_coeff (v / 100.); }));
+
+        auto * layout = new QVBoxLayout ();
+        btn_bloom_color_ = new QPushButton ("Select Color");
+        label_bloom_color_ = new QLabel ("No color selected");
+        label_bloom_color_->setAlignment (Qt::AlignCenter);
+
+        layout->addWidget (btn_bloom_color_);
+        layout->addWidget (label_bloom_color_);
+
+        connect (btn_bloom_color_, &QPushButton::clicked, [&]()
+        {
+            QColor col = QColorDialog::getColor (Qt::white, this, "Color selection");
+            if (col.isValid ())
+            {
+                filter_bloom_->set_bloom_color (cv::Scalar{col.blue () / 255., col.green () / 255., col.red () / 255.});
+
+                QString style = QString("background-color: %1;").arg (col.name ());
+                label_bloom_color_->setText (col.name ());
+                label_bloom_color_->setStyleSheet (style);
+            }
+        });
+
+        h->addLayout (layout);
 
         box->setLayout (h);
         v->addWidget (box);
