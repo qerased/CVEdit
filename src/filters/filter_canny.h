@@ -13,7 +13,13 @@ public:
         if (mat.empty ()) return;
         cv::Mat edges;
         cv::Canny (mat, edges, thresh1, thresh2);
-        cv::cvtColor (edges, mat, cv::COLOR_GRAY2BGR);
+        if (replace)
+            cv::cvtColor (edges, mat, cv::COLOR_GRAY2RGB);
+        else
+        {
+            cv::cvtColor (edges, edges, cv::COLOR_GRAY2BGR);
+            mat += edges;
+        }
     }
 
     void set_thr1 (double new_thr1)
@@ -26,8 +32,14 @@ public:
         thresh2 = new_thr2;
     }
 
+    void set_replace (bool new_replace)
+    {
+        replace = new_replace;
+    }
+
 private:
     double thresh1{100}, thresh2{200};
+    bool replace {false};
 };
 
 #endif //CVEDIT_FILTER_CANNY_H

@@ -9,6 +9,15 @@ void main_window::bind_toggle (QCheckBox * chk, filter * f)
             });
 }
 
+void main_window::bind_chkbox (QCheckBox * chk, std::function<void(bool)> trigger)
+{
+    connect(chk, &QCheckBox::stateChanged, this,
+            [this, trigger] (bool on) {
+                trigger (on);
+                if (!is_live_) reprocess_and_show ();
+            });
+}
+
 void main_window::bind_slider (QSlider * s, std::function<void(int)> setter)
 {
     connect(s, &QSlider::valueChanged, this,
@@ -79,7 +88,7 @@ QHBoxLayout * main_window::get_slider (
     return layout;
 }
 
-QHBoxLayout *main_window::get_spin (
+QHBoxLayout * main_window::get_spin (
     QGroupBox *box, QString label, QSpinBox *spin,
     int base_val, int min_val, int max_val,
     std::function<void(int)> spin_f)
@@ -96,3 +105,18 @@ QHBoxLayout *main_window::get_spin (
 
     return layout;
 }
+
+QHBoxLayout * main_window::get_checkbox (
+    QGroupBox *box, QString label,
+    QCheckBox * chk,
+    std::function<void(bool)> trigger)
+{
+    auto * layout = new QHBoxLayout ();
+
+    chk = new QCheckBox (label, box);
+    bind_chkbox (chk, trigger);
+    layout->addWidget (chk);
+
+    return layout;
+}
+

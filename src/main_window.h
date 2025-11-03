@@ -50,11 +50,14 @@ private:
     void resizeEvent(QResizeEvent *event) override;
 
     void bind_toggle (QCheckBox * chk, filter * f);
+    void bind_chkbox (QCheckBox * chk, std::function<void(bool)> trigger);
     void bind_slider (QSlider * s, std::function<void(int)> setter);
     void bind_spin (QSpinBox * s, std::function<void(int)> setter);
     void bind_combo (QComboBox * c, std::function<void(const QVariant &)> setter);
 
     QHBoxLayout * get_chk_ord_layout (QGroupBox * box, filter * f, QCheckBox * chk, QSpinBox * spin);
+    QHBoxLayout * get_checkbox (QGroupBox * box, QString label,
+                                QCheckBox * chk, std::function<void(bool)> trigger);
     QHBoxLayout * get_slider (QGroupBox * box, QString label, QSlider * slider,
                               int base_val, int min_val, int max_val,
                               std::function<void(int)> slider_f);
@@ -93,6 +96,7 @@ private:
 
     filter_canny * filter_canny_;
     QCheckBox * chk_canny_       = nullptr;
+    QCheckBox * chk_canny_replace_ = nullptr;
     QSlider * slider_canny_thr1  = nullptr;
     QSlider * slider_canny_thr2  = nullptr;
     QSpinBox * spin_canny_ord_   = nullptr;

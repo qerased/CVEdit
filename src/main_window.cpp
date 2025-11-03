@@ -120,6 +120,9 @@ void main_window::create_filters_dock ()
         auto * h = new QVBoxLayout (box);
         h->addLayout (get_chk_ord_layout (box, filter_canny_, chk_canny_, spin_canny_ord_));
 
+        h->addLayout (get_checkbox (box, "Replace :", chk_canny_replace_,
+            [f = filter_canny_] (bool on) { f->set_replace (on); }));
+
         h->addLayout (get_slider (box, "Threshold 1:", slider_canny_thr1,
             100, 1, 200,
             [f = filter_canny_] (int v){ f->set_thr1 (v); }));
