@@ -66,7 +66,7 @@ void main_window::create_ui ()
     grab_timer_ = new QTimer (this);
     grab_timer_->setInterval (33);
     connect (grab_timer_, &QTimer::timeout, this, &main_window::on_grab_tick);
-    grab_timer_->start ();
+    /// grab_timer_->start ();
 }
 
 void main_window::create_filters_dock ()
@@ -433,7 +433,7 @@ void main_window::on_grab_tick ()
     /// image is shown but we still need to update live filters
     if (!is_live_)
     {
-        reprocess_and_show ();
+        /// reprocess_and_show ();
         return;
     }
 
