@@ -36,6 +36,8 @@ private slots:
 
     void open_video_file ();
 
+    void save_screenshot ();
+
 private:
     void create_ui ();
     void create_menus ();
@@ -74,6 +76,8 @@ private:
 
     QAction * act_start_webcam_ = nullptr;
     QAction * act_stop_         = nullptr;
+
+    QAction * act_screenshot_   = nullptr;
 
     //// filters
     unsigned int tick_num_ {0};

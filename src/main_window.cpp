@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QGroupBox>
 #include <QScrollArea>
+#include <QToolBar>
 #include <opencv2/core.hpp>
 
 #include "utils.h"
@@ -249,9 +250,37 @@ void main_window::create_menus ()
     connect (act_stop_, &QAction::triggered, this, &main_window::stop_source);
     source_menu->addAction (act_stop_);
 
-    auto * help_menu = menuBar ()->addMenu ("Help");
+    auto * tb = addToolBar ("Main");
+    tb->setObjectName ("tbMain");
+    act_screenshot_ = new QAction ("Screenshot", this);
+    connect (act_screenshot_, &QAction::triggered, this, &main_window::save_screenshot);
+    tb->addAction (act_screenshot_);
+}
 
-    Q_UNUSED (help_menu);
+void main_window::save_screenshot ()
+{
+    if (current_pixmap_.isNull ())
+    {
+        statusBar ()->showMessage ("No image to save", 3000);
+        return;
+    }
+
+    const QString sugg = QDir::homePath () + "/screenshot_" +
+        QDateTime::currentDateTime ().toString ("yyyyMMdd_HHmmss") + ".png";
+
+    const QString path = QFileDialog::getSaveFileName (
+        this, "Save screenshot", sugg, "PNG (*.png);;JPEG (*.jpg *.jpeg)");
+
+    if (path.isEmpty ())
+        return;
+
+    if (!current_pixmap_.save (path))
+    {
+        statusBar ()->showMessage ("Cannot save screenshot", 3000);
+        return;
+    }
+
+    statusBar ()->showMessage (QString ("Saved: %1").arg (path), 3000);
 }
 
 void main_window::create_status_bar ()
