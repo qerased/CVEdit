@@ -176,7 +176,7 @@ void main_window::create_filters_dock ()
             0, 0, 300,
             [f = filter_sort_] (int v) { f->set_chunk (v); }));
 
-        h->addLayout (get_spin (box, "Stride size:", spin_sort_chunk_,
+        h->addLayout (get_spin (box, "Stride size:", spin_sort_stride_,
             0, 0, 300,
             [f = filter_sort_] (int v) { f->set_stride (v); }));
 

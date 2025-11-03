@@ -26,8 +26,8 @@ bool video_source::open_video (const std::string & path)
     close ();
     if (!cap_.open (path, cv::CAP_ANY))
     {
-        return false;
         type_ = type::None;
+        return false;
     }
 
     type_ = type::Video;
