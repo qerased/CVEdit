@@ -33,6 +33,7 @@ main_window::main_window (QWidget *parent)
     filter_bloom_ = filter_chain_.add<filter_bloom> ();
     filter_colorize_ = filter_chain_.add<filter_colorize> ();
     filter_vignette_ = filter_chain_.add<filter_vignette> ();
+    filter_film_noise_ = filter_chain_.add<filter_film_noise> ();
 
     create_filters_dock ();
 
@@ -45,6 +46,7 @@ main_window::main_window (QWidget *parent)
     filter_bloom_->set_enabled (false);
     filter_colorize_->set_enabled (false);
     filter_vignette_->set_enabled (false);
+    filter_film_noise_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -321,6 +323,28 @@ void main_window::create_filters_dock ()
         h->addLayout (get_slider (box, "Radius:", slider_vignette_radius_,
             5, 0, 100,
             [f = filter_vignette_] (int v) { f->set_radius (v / 100.); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// filn_noise
+    {
+        auto * box = new QGroupBox ("Film Noise");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_film_noise_, chk_film_noise_, spin_film_noise_ord_));
+
+        h->addLayout (get_slider (box, "Grain:", slider_film_noise_grain_,
+            25, 0, 100,
+            [f = filter_film_noise_] (int v) { f->set_grain (v / 100.); }));
+
+        h->addLayout (get_slider (box, "Scratches:", slider_film_noise_scrathes_,
+            15, 0, 100,
+            [f = filter_film_noise_] (int v) { f->set_scratches (v / 100.); }));
+
+        h->addLayout (get_slider (box, "Flicker:", slider_film_noise_flicker_,
+            6, 0, 100,
+            [f = filter_film_noise_] (int v) { f->set_flicker (v / 100.); }));
 
         box->setLayout (h);
         v->addWidget (box);

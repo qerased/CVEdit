@@ -17,6 +17,7 @@
 #include "filters/filter_canny.h"
 #include "filters/filter_bloom.h"
 #include "filters/filter_colorize.h"
+#include "filters/filter_film_noise.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_kuwahara.h"
 #include "filters/filter_shake.h"
@@ -153,6 +154,13 @@ private:
     QSpinBox  * spin_vignette_ord_     = nullptr;
     QSlider   * slider_vignette_str_   = nullptr;
     QSlider   * slider_vignette_radius_ = nullptr;
+
+    filter_film_noise * filter_film_noise_;
+    QCheckBox * chk_film_noise_      = nullptr;
+    QSpinBox  * spin_film_noise_ord_ = nullptr;
+    QSlider   * slider_film_noise_grain_    = nullptr;
+    QSlider   * slider_film_noise_scrathes_ = nullptr;
+    QSlider   * slider_film_noise_flicker_  = nullptr;
 };
 
 
