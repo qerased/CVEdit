@@ -3,6 +3,7 @@
 #include "filter.h"
 
 #include <QMetaType>
+#include <random>
 
 enum class sort_mode { Luminosity, Red, Green, Blue, Hue};
 Q_DECLARE_METATYPE (sort_mode);
@@ -56,6 +57,9 @@ public:
         axis_ = axis;
     }
 
+    void set_random_mask_enabled (const bool enabled) { use_random_mask_ = enabled; }
+    void set_mask_prob (const double probability) { mask_prob_ = probability; };
+
 private:
     sort_mode mode_ {sort_mode::Luminosity};
     sort_scope scope_ { sort_scope::Global };
@@ -63,6 +67,10 @@ private:
 
     unsigned int chunk_ {0}; /// 0 == all, >0 = size of interval
     unsigned int stride_ {0}; /// 0 == non-overlapping, >0 = step
+
+    bool use_random_mask_{false};
+    double mask_prob_{0.0};
+    std::mt19937 rng_;
 
     void sort_global (cv::Mat & mat);
     void sort_rows (cv::Mat & mat);

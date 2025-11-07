@@ -118,6 +118,8 @@ private:
     QSpinBox  * spin_sort_chunk_  = nullptr;
     QSpinBox  * spin_sort_stride_ = nullptr;
     QSpinBox  * spin_sort_ord_   = nullptr;
+    QCheckBox * chk_sort_mask_   = nullptr;
+    QSlider   * slider_sort_mask_prob_ = nullptr;
 
     filter_kuwahara * filter_kuwahara_;
     QCheckBox * chk_kuwahara_    = nullptr;

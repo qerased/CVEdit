@@ -180,6 +180,13 @@ void main_window::create_filters_dock ()
             0, 0, 300,
             [f = filter_sort_] (int v) { f->set_stride (v); }));
 
+        h->addLayout (get_checkbox (box, "Use Random Mask:", chk_sort_mask_,
+            [f = filter_sort_] (bool on) { f->set_random_mask_enabled(on); }));
+
+        h->addLayout (get_slider (box, "Mask probability:", slider_sort_mask_prob_,
+            0, 0, 100,
+            [f = filter_sort_] (int v){ f->set_mask_prob (v / 100.); }));
+
         box->setLayout (h);
         v->addWidget (box);
         bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });

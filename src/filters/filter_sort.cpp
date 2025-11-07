@@ -86,8 +86,19 @@ void filter_sort::sort_rows (cv::Mat &mat)
     const unsigned int xlen = axis_ == sort_axis::Vertical ? chunk : w;
     const unsigned int yloop = axis_ == sort_axis::Vertical ? 1 : chunk;
 
+    const bool use_mask = use_random_mask_ && (stride_ > 0);
+    const double auto_p = (stride_ > 0) ? (1.0 / static_cast<double> (stride_)) : 1.0;
+    const double pick_p = (mask_prob_ > 0.0 && mask_prob_ <= 1.0) ? mask_prob_ : auto_p;
+    std::bernoulli_distribution pick_dist (pick_p);
+
     for (int y = 0; y < h; y += dy)
     {
+        if (use_mask)
+        {
+            if (!pick_dist (rng_))
+                continue;
+        }
+
         for (int y0 = y; y0 < std::min (y + yloop, h); y0++)
         {
             auto * row = mat.ptr<cv::Vec3b> (y0);
