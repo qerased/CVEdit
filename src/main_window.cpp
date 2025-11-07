@@ -32,6 +32,7 @@ main_window::main_window (QWidget *parent)
     filter_kuwahara_ = filter_chain_.add<filter_kuwahara> ();
     filter_bloom_ = filter_chain_.add<filter_bloom> ();
     filter_colorize_ = filter_chain_.add<filter_colorize> ();
+    filter_vignette_ = filter_chain_.add<filter_vignette> ();
 
     create_filters_dock ();
 
@@ -43,6 +44,7 @@ main_window::main_window (QWidget *parent)
     filter_kuwahara_->set_enabled (false);
     filter_bloom_->set_enabled (false);
     filter_colorize_->set_enabled (false);
+    filter_vignette_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -301,6 +303,24 @@ void main_window::create_filters_dock ()
             [f = filter_colorize_] (int v) { f->set_strength (v / 100.); }));
 
         h->addLayout (layout);
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// vignette
+    {
+        auto * box = new QGroupBox ("Vignette");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_vignette_, chk_vignette_, spin_vignette_ord_));
+
+        h->addLayout (get_slider (box, "Strength:", slider_vignette_str_,
+            50, 0, 100,
+            [f = filter_vignette_] (int v) { f->set_strength (v / 100.); }));
+
+        h->addLayout (get_slider (box, "Radius:", slider_vignette_radius_,
+            5, 0, 100,
+            [f = filter_vignette_] (int v) { f->set_radius (v / 100.); }));
 
         box->setLayout (h);
         v->addWidget (box);

@@ -21,6 +21,7 @@
 #include "filters/filter_kuwahara.h"
 #include "filters/filter_shake.h"
 #include "filters/filter_sort.h"
+#include "filters/filter_vignette.h"
 
 class main_window : public QMainWindow
 {
@@ -146,6 +147,12 @@ private:
     QPushButton * btn_colorize_color_   = nullptr;
     QLabel    * label_colorize_color_   = nullptr;
     QSlider   * slider_colorize_str_ = nullptr;
+
+    filter_vignette * filter_vignette_;
+    QCheckBox * chk_vignette_          = nullptr;
+    QSpinBox  * spin_vignette_ord_     = nullptr;
+    QSlider   * slider_vignette_str_   = nullptr;
+    QSlider   * slider_vignette_radius_ = nullptr;
 };
 
 
