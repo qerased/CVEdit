@@ -20,6 +20,7 @@
 #include "filters/filter_film_noise.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_kuwahara.h"
+#include "filters/filter_scanlines.h"
 #include "filters/filter_shake.h"
 #include "filters/filter_sort.h"
 #include "filters/filter_vignette.h"
@@ -161,6 +162,13 @@ private:
     QSlider   * slider_film_noise_grain_    = nullptr;
     QSlider   * slider_film_noise_scrathes_ = nullptr;
     QSlider   * slider_film_noise_flicker_  = nullptr;
+
+    filter_scanlines * filter_scanlines_;
+    QCheckBox * chk_scanlines_      = nullptr;
+    QSpinBox  * spin_scanlines_ord_ = nullptr;
+    QSlider   * slider_scanlines_density_  = nullptr;
+    QSlider   * slider_scanlines_darkness_ = nullptr;
+    QSlider   * slider_scanlines_speed_    = nullptr;
 };
 
 

@@ -34,6 +34,7 @@ main_window::main_window (QWidget *parent)
     filter_colorize_ = filter_chain_.add<filter_colorize> ();
     filter_vignette_ = filter_chain_.add<filter_vignette> ();
     filter_film_noise_ = filter_chain_.add<filter_film_noise> ();
+    filter_scanlines_ = filter_chain_.add<filter_scanlines> ();
 
     create_filters_dock ();
 
@@ -47,6 +48,7 @@ main_window::main_window (QWidget *parent)
     filter_colorize_->set_enabled (false);
     filter_vignette_->set_enabled (false);
     filter_film_noise_->set_enabled (false);
+    filter_scanlines_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -345,6 +347,28 @@ void main_window::create_filters_dock ()
         h->addLayout (get_slider (box, "Flicker:", slider_film_noise_flicker_,
             6, 0, 100,
             [f = filter_film_noise_] (int v) { f->set_flicker (v / 100.); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// scanlines
+    {
+        auto * box = new QGroupBox ("Scanlines");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_scanlines_, chk_scanlines_, spin_scanlines_ord_));
+
+        h->addLayout (get_slider (box, "Darkness:", slider_scanlines_darkness_,
+            25, 0, 100,
+            [f = filter_scanlines_] (int v) { f->set_darkness (v / 100.); }));
+
+        h->addLayout (get_slider (box, "Density:", slider_scanlines_density_,
+            2, 1, 10,
+            [f = filter_scanlines_] (int v) { f->set_density (v); }));
+
+        h->addLayout (get_slider (box, "Speed:", slider_scanlines_speed_,
+            0, 0, 100,
+            [f = filter_scanlines_] (int v) { f->set_speed (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
