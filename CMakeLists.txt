@@ -33,6 +33,13 @@ qt_add_executable(CVEdit
         src/filters/filter_sort.cpp
         src/filters/filter_kuwahara.h
         src/filters/filter_bloom.h
+        src/filters/filter_colorize.h
+        src/filters/filter_vignette.h
+        src/filters/filter_film_noise.h
+        src/filters/filter_scanlines.h
+        src/filters/filter_hue_shift.h
+        src/filters/filter_pixel_displace.h
+        src/filters/filter_gradient_overlay.h
 )
 
 target_link_libraries(CVEdit PRIVATE Qt6::Widgets ${OpenCV_LIBS})
