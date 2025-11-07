@@ -19,6 +19,7 @@
 #include "filters/filter_colorize.h"
 #include "filters/filter_film_noise.h"
 #include "filters/filter_grayscale.h"
+#include "filters/filter_hue_shift.h"
 #include "filters/filter_kuwahara.h"
 #include "filters/filter_scanlines.h"
 #include "filters/filter_shake.h"
@@ -169,6 +170,11 @@ private:
     QSlider   * slider_scanlines_density_  = nullptr;
     QSlider   * slider_scanlines_darkness_ = nullptr;
     QSlider   * slider_scanlines_speed_    = nullptr;
+
+    filter_hue_shift * filter_hue_shift_;
+    QCheckBox * chk_hue_shift_      = nullptr;
+    QSpinBox  * spin_hue_shift_ord_ = nullptr;
+    QSlider   * slider_hue_shift_speed_ = nullptr;
 };
 
 

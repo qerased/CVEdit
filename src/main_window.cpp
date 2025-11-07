@@ -35,6 +35,7 @@ main_window::main_window (QWidget *parent)
     filter_vignette_ = filter_chain_.add<filter_vignette> ();
     filter_film_noise_ = filter_chain_.add<filter_film_noise> ();
     filter_scanlines_ = filter_chain_.add<filter_scanlines> ();
+    filter_hue_shift_ = filter_chain_.add<filter_hue_shift> ();
 
     create_filters_dock ();
 
@@ -359,6 +360,20 @@ void main_window::create_filters_dock ()
         h->addLayout (get_slider (box, "Speed:", slider_scanlines_speed_,
             0, 0, 100,
             [f = filter_scanlines_] (int v) { f->set_speed (v); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// hue shift
+    {
+        auto * box = new QGroupBox ("Hue Shift");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_hue_shift_, chk_hue_shift_, spin_hue_shift_ord_));
+
+        h->addLayout (get_slider (box, "Speed:", slider_hue_shift_speed_,
+            12, 0, 100,
+            [f = filter_hue_shift_] (int v) { f->set_speed (v / 100.); }));
 
         box->setLayout (h);
         v->addWidget (box);
