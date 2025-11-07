@@ -21,6 +21,7 @@
 #include "filters/filter_grayscale.h"
 #include "filters/filter_hue_shift.h"
 #include "filters/filter_kuwahara.h"
+#include "filters/filter_pixel_displace.h"
 #include "filters/filter_scanlines.h"
 #include "filters/filter_shake.h"
 #include "filters/filter_sort.h"
@@ -175,6 +176,14 @@ private:
     QCheckBox * chk_hue_shift_      = nullptr;
     QSpinBox  * spin_hue_shift_ord_ = nullptr;
     QSlider   * slider_hue_shift_speed_ = nullptr;
+
+    filter_pixel_displace * filter_pixel_displace_;
+    QCheckBox * chk_pixel_displace_  = nullptr;
+    QSpinBox  * spin_pixel_displace_ord_ = nullptr;
+    QSpinBox  * spin_pixel_displace_bw_  = nullptr;
+    QSpinBox  * spin_pixel_displace_bh_  = nullptr;
+    QSpinBox  * spin_pixel_displace_shift_  = nullptr;
+    QSlider   * spin_pixel_displace_speed_  = nullptr;
 };
 
 

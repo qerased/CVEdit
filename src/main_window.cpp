@@ -36,6 +36,7 @@ main_window::main_window (QWidget *parent)
     filter_film_noise_ = filter_chain_.add<filter_film_noise> ();
     filter_scanlines_ = filter_chain_.add<filter_scanlines> ();
     filter_hue_shift_ = filter_chain_.add<filter_hue_shift> ();
+    filter_pixel_displace_ = filter_chain_.add<filter_pixel_displace> ();
 
     create_filters_dock ();
 
@@ -374,6 +375,32 @@ void main_window::create_filters_dock ()
         h->addLayout (get_slider (box, "Speed:", slider_hue_shift_speed_,
             12, 0, 100,
             [f = filter_hue_shift_] (int v) { f->set_speed (v / 100.); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// pixel displace
+    {
+        auto * box = new QGroupBox ("Pixel Displace");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_pixel_displace_, chk_pixel_displace_, spin_pixel_displace_ord_));
+
+        h->addLayout (get_spin (box, "Block Height:", spin_pixel_displace_bh_,
+            16, 1, 100,
+            [f = filter_pixel_displace_] (int v) { f->set_block_h (v); }));
+
+        h->addLayout (get_spin (box, "Block Width:", spin_pixel_displace_bw_,
+            32, 1, 100,
+            [f = filter_pixel_displace_] (int v) { f->set_block_w (v); }));
+
+        h->addLayout (get_spin (box, "Max Shift:", spin_pixel_displace_shift_,
+            12, 1, 100,
+            [f = filter_pixel_displace_] (int v) { f->set_max_shift (v); }));
+
+        h->addLayout (get_slider (box, "Speed:", spin_pixel_displace_speed_,
+            4, 1, 100,
+            [f = filter_pixel_displace_] (int v) { f->set_speed (v); }));
 
         box->setLayout (h);
         v->addWidget (box);
