@@ -38,17 +38,7 @@ main_window::main_window (QWidget *parent)
 
     create_filters_dock ();
 
-    filter_grayscale_->set_enabled (false);
-    filter_blur_->set_enabled (false);
-    filter_canny_->set_enabled (false);
-    filter_shake_->set_enabled (false);
-    filter_sort_->set_enabled (false);
-    filter_kuwahara_->set_enabled (false);
-    filter_bloom_->set_enabled (false);
-    filter_colorize_->set_enabled (false);
-    filter_vignette_->set_enabled (false);
-    filter_film_noise_->set_enabled (false);
-    filter_scanlines_->set_enabled (false);
+    filter_chain_.disable_all ();
 }
 
 void main_window::create_ui ()

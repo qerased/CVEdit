@@ -63,6 +63,12 @@ public:
                 f->apply(mat, fi);
     }
 
+    void disable_all ()
+    {
+        for (auto & f : filters_)
+            f->set_enabled (false);
+    }
+
     std::vector<std::unique_ptr<filter>> & filters () { return filters_; }
 
 private:
