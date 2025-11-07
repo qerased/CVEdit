@@ -187,6 +187,17 @@ void main_window::create_filters_dock ()
             0, 0, 100,
             [f = filter_sort_] (int v){ f->set_mask_prob (v / 100.); }));
 
+        h->addLayout (get_checkbox (box, "Enable Threshold:", chk_sort_thr_enabled_,
+            [f = filter_sort_] (bool on) { f->set_threshold_enabled (on); }));
+
+        h->addLayout (get_slider (box, "Threshold low:", slider_sort_thr_lo_,
+            40, 0, 255,
+            [f = filter_sort_] (int v){ f->set_threshold_lo (v); }));
+
+        h->addLayout (get_slider (box, "Threshold high:", slider_sort_thr_hi_,
+            190, 0, 255,
+            [f = filter_sort_] (int v) { f->set_threshold_hi (v); }));
+
         box->setLayout (h);
         v->addWidget (box);
         bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });

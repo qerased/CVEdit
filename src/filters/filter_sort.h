@@ -32,33 +32,26 @@ public:
         }
     }
 
-    void set_mode (const sort_mode mode)
-    {
-        mode_ = mode;
-    }
-
-    void set_chunk (const unsigned int chunk)
-    {
-        chunk_ = chunk;
-    }
-
-    void set_stride (const unsigned int stride)
-    {
-        stride_ = stride;
-    }
-
-    void set_scope (const sort_scope scope)
-    {
-        scope_ = scope;
-    }
-
-    void set_axis (const sort_axis axis)
-    {
-        axis_ = axis;
-    }
+    void set_mode (const sort_mode mode) { mode_ = mode; }
+    void set_chunk (const unsigned int chunk){ chunk_ = chunk; }
+    void set_stride (const unsigned int stride) { stride_ = stride; }
+    void set_scope (const sort_scope scope) { scope_ = scope; }
+    void set_axis (const sort_axis axis) { axis_ = axis; }
 
     void set_random_mask_enabled (const bool enabled) { use_random_mask_ = enabled; }
-    void set_mask_prob (const double probability) { mask_prob_ = probability; };
+    void set_mask_prob (const double probability) { mask_prob_ = probability; }
+
+    void set_threshold_enabled (const bool enabled) { thr_enabled_ = enabled; }
+    void set_threshold_lo (unsigned int lo)
+    {
+        thr_lo_ = lo;
+        if (thr_lo_ > thr_hi_) std::swap (thr_lo_, thr_hi_);
+    }
+    void set_threshold_hi (unsigned int hi)
+    {
+        thr_hi_ = hi;
+        if (thr_lo_ > thr_hi_) std::swap (thr_lo_, thr_hi_);
+    }
 
 private:
     sort_mode mode_ {sort_mode::Luminosity};
@@ -71,6 +64,9 @@ private:
     bool use_random_mask_{false};
     double mask_prob_{0.0};
     std::mt19937 rng_;
+
+    bool thr_enabled_{false};
+    unsigned int thr_lo_{40}, thr_hi_{190};
 
     void sort_global (cv::Mat & mat);
     void sort_rows (cv::Mat & mat);

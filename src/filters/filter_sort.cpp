@@ -91,13 +91,16 @@ void filter_sort::sort_rows (cv::Mat &mat)
     const double pick_p = (mask_prob_ > 0.0 && mask_prob_ <= 1.0) ? mask_prob_ : auto_p;
     std::bernoulli_distribution pick_dist (pick_p);
 
+    auto should_sort_key = [&] (unsigned int k)
+    {
+        if (!thr_enabled_) return true;
+        return (k < thr_lo_) || (k > thr_hi_);
+    };
+
     for (int y = 0; y < h; y += dy)
     {
-        if (use_mask)
-        {
-            if (!pick_dist (rng_))
-                continue;
-        }
+        if (use_mask && !pick_dist (rng_))
+            continue;
 
         for (int y0 = y; y0 < std::min (y + yloop, h); y0++)
         {
@@ -130,12 +133,38 @@ void filter_sort::sort_rows (cv::Mat &mat)
                     }
                 }
 
-                std::vector<cv::Vec3b> out (len);
-                counting_scatter_segment (buf.data (), keys.data (), len,
-                                          bins, counts, offsets, out.data ());
+                if (!thr_enabled_)
+                {
+                    std::vector<cv::Vec3b> out (len);
+                    counting_scatter_segment (buf.data (), keys.data (), len,
+                                              bins, counts, offsets, out.data ());
 
-                for (int i = 0; i < len; i++)
-                    row[x + i] = out[i];
+                    for (int i = 0; i < len; i++)
+                        row[x + i] = out[i];
+                }
+                else
+                {
+                    int i = 0;
+                    while (i < len)
+                    {
+                        if (!should_sort_key(keys[i]))
+                        {
+                            i++;
+                            continue;
+                        }
+
+                        int j = i + 1;
+                        while (j < len && should_sort_key(keys[j])) j++;
+
+                        const int segN = j - i;
+                        std::vector<cv::Vec3b> segOut (segN);
+                        counting_scatter_segment (&buf[i], &keys[i], segN,
+                                                  bins, counts, offsets, segOut.data ());
+                        for (int t = 0; t < segN; ++t)
+                            row[x + i + t] = segOut[t];
+                        i = j;
+                    }
+                }
 
                 if ((axis_ == sort_axis::Vertical && chunk == 0) ||
                      axis_ == sort_axis::Horizontal)

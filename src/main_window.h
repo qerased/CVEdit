@@ -120,6 +120,9 @@ private:
     QSpinBox  * spin_sort_ord_   = nullptr;
     QCheckBox * chk_sort_mask_   = nullptr;
     QSlider   * slider_sort_mask_prob_ = nullptr;
+    QCheckBox * chk_sort_thr_enabled_  = nullptr;
+    QSlider   * slider_sort_thr_lo_ = nullptr;
+    QSlider   * slider_sort_thr_hi_ = nullptr;
 
     filter_kuwahara * filter_kuwahara_;
     QCheckBox * chk_kuwahara_    = nullptr;
