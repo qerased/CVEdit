@@ -198,6 +198,9 @@ void main_window::create_filters_dock ()
             190, 0, 255,
             [f = filter_sort_] (int v) { f->set_threshold_hi (v); }));
 
+        h->addLayout (get_checkbox (box, "Enable random chunk:", chk_sort_rand_chunk_,
+            [f = filter_sort_] (bool on) { f->enable_rand_chunk (on); }));
+
         box->setLayout (h);
         v->addWidget (box);
         bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });

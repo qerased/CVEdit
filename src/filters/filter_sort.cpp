@@ -83,7 +83,9 @@ void filter_sort::sort_rows (cv::Mat &mat)
     const int dx = axis_ == sort_axis::Vertical ? stride : 1;
     const int dy = axis_ == sort_axis::Vertical ? 1 : stride;
 
-    const unsigned int xlen = axis_ == sort_axis::Vertical ? chunk : w;
+    std::uniform_int_distribution<int> chunk_jitter(std::max(8u, chunk_/2), chunk_*3/2);
+    const unsigned int xlen = axis_ == sort_axis::Vertical ? (use_rand_chunk_ ? chunk_jitter(rng_) : chunk) : w;
+
     const unsigned int yloop = axis_ == sort_axis::Vertical ? 1 : chunk;
 
     const bool use_mask = use_random_mask_ && (stride_ > 0);

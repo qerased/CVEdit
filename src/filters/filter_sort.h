@@ -53,6 +53,8 @@ public:
         if (thr_lo_ > thr_hi_) std::swap (thr_lo_, thr_hi_);
     }
 
+    void enable_rand_chunk (const bool enable) { use_rand_chunk_ = enable; }
+
 private:
     sort_mode mode_ {sort_mode::Luminosity};
     sort_scope scope_ { sort_scope::Global };
@@ -67,6 +69,8 @@ private:
 
     bool thr_enabled_{false};
     unsigned int thr_lo_{40}, thr_hi_{190};
+
+    bool use_rand_chunk_{false};
 
     void sort_global (cv::Mat & mat);
     void sort_rows (cv::Mat & mat);
