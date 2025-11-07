@@ -18,6 +18,7 @@
 #include "filters/filter_bloom.h"
 #include "filters/filter_colorize.h"
 #include "filters/filter_film_noise.h"
+#include "filters/filter_gradient_overlay.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_hue_shift.h"
 #include "filters/filter_kuwahara.h"
@@ -184,6 +185,16 @@ private:
     QSpinBox  * spin_pixel_displace_bh_  = nullptr;
     QSpinBox  * spin_pixel_displace_shift_  = nullptr;
     QSlider   * spin_pixel_displace_speed_  = nullptr;
+
+    filter_gradient_overlay * filter_gradient_overlay_;
+    QCheckBox * chk_gradient_           = nullptr;
+    QSpinBox  * spin_gradient_ord_      = nullptr;
+    QPushButton * btn_gradient_color1_  = nullptr;
+    QLabel    * label_gradient_color1_  = nullptr;
+    QPushButton * btn_gradient_color2_  = nullptr;
+    QLabel    * label_gradient_color2_  = nullptr;
+    QComboBox * combo_gradient_axis_    = nullptr;
+    QSlider   * slider_gradient_strength_ = nullptr;
 };
 
 

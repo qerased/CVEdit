@@ -37,6 +37,7 @@ main_window::main_window (QWidget *parent)
     filter_scanlines_ = filter_chain_.add<filter_scanlines> ();
     filter_hue_shift_ = filter_chain_.add<filter_hue_shift> ();
     filter_pixel_displace_ = filter_chain_.add<filter_pixel_displace> ();
+    filter_gradient_overlay_ = filter_chain_.add<filter_gradient_overlay> ();
 
     create_filters_dock ();
 
@@ -401,6 +402,70 @@ void main_window::create_filters_dock ()
         h->addLayout (get_slider (box, "Speed:", spin_pixel_displace_speed_,
             4, 1, 100,
             [f = filter_pixel_displace_] (int v) { f->set_speed (v); }));
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// gradient overlay /// TODO: refactor color selections
+    {
+        auto * box = new QGroupBox ("Gradient Overlay");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_gradient_overlay_, chk_gradient_, spin_gradient_ord_));
+        h->addLayout (get_slider (box, "Strength :", slider_gradient_strength_, 50, 0, 100,
+            [f = filter_gradient_overlay_] (int v) { f->set_strength (v / 100.); }));
+
+        combo_gradient_axis_ = new QComboBox (box);
+        combo_gradient_axis_->addItem ("Vertical", 1);
+        combo_gradient_axis_->addItem ("Horizontal", 0);
+        h->addWidget (combo_gradient_axis_);
+        bind_combo (combo_gradient_axis_,
+            [f = filter_gradient_overlay_] (const QVariant & v) { f->set_axis (v.value<int> ()); });
+
+        auto * layout = new QVBoxLayout ();
+        btn_gradient_color1_ = new QPushButton ("Select first Color");
+        btn_gradient_color2_ = new QPushButton ("Select second Color");
+        label_gradient_color1_ = new QLabel ("No color selected");
+        label_gradient_color2_ = new QLabel ("No color selected");
+        label_gradient_color1_->setAlignment (Qt::AlignCenter);
+        label_gradient_color2_->setAlignment (Qt::AlignCenter);
+
+        layout->addWidget (btn_gradient_color1_);
+        layout->addWidget (label_gradient_color1_);
+        layout->addWidget (btn_gradient_color2_);
+        layout->addWidget (label_gradient_color2_);
+
+        connect (btn_gradient_color1_, &QPushButton::clicked, [&]()
+        {
+            QColor col = QColorDialog::getColor (Qt::white, this, "Color selection");
+            if (col.isValid ())
+            {
+                filter_gradient_overlay_->set_first_color (cv::Scalar{col.blue () / 1., col.green () / 1., col.red () / 1.});
+
+                QString style = QString("background-color: %1;").arg (col.name ());
+                label_gradient_color1_->setText (col.name ());
+                label_gradient_color1_->setStyleSheet (style);
+
+                if (!is_live_) reprocess_and_show ();
+            }
+        });
+
+        connect (btn_gradient_color2_, &QPushButton::clicked, [&]()
+        {
+            QColor col = QColorDialog::getColor (Qt::white, this, "Color selection");
+            if (col.isValid ())
+            {
+                filter_gradient_overlay_->set_second_color (cv::Scalar{col.blue () / 1., col.green () / 1., col.red () / 1.});
+
+                QString style = QString("background-color: %1;").arg (col.name ());
+                label_gradient_color2_->setText (col.name ());
+                label_gradient_color2_->setStyleSheet (style);
+
+                if (!is_live_) reprocess_and_show ();
+            }
+        });
+
+        h->addLayout (layout);
 
         box->setLayout (h);
         v->addWidget (box);
