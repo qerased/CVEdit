@@ -16,6 +16,7 @@
 #include "filters/filter_blur.h"
 #include "filters/filter_canny.h"
 #include "filters/filter_bloom.h"
+#include "filters/filter_colorize.h"
 #include "filters/filter_grayscale.h"
 #include "filters/filter_kuwahara.h"
 #include "filters/filter_shake.h"
@@ -138,6 +139,13 @@ private:
     QSlider   * slider_bloom_radius_ = nullptr;
     QPushButton * btn_bloom_color_   = nullptr;
     QLabel    * label_bloom_color_   = nullptr;
+
+    filter_colorize * filter_colorize_;
+    QCheckBox * chk_colorize_        = nullptr;
+    QSpinBox  * spin_colorize_ord_   = nullptr;
+    QPushButton * btn_colorize_color_   = nullptr;
+    QLabel    * label_colorize_color_   = nullptr;
+    QSlider   * slider_colorize_str_ = nullptr;
 };
 
 

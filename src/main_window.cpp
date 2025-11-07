@@ -28,9 +28,10 @@ main_window::main_window (QWidget *parent)
     filter_blur_ = filter_chain_.add<filter_blur> ();
     filter_shake_ = filter_chain_.add<filter_shake> ();
     filter_sort_ = filter_chain_.add<filter_sort> ();
-    filter_canny_ = filter_chain_.add<filter_canny> (); /// TODO: add smart ordering and prevent canny before sort
+    filter_canny_ = filter_chain_.add<filter_canny> ();
     filter_kuwahara_ = filter_chain_.add<filter_kuwahara> ();
     filter_bloom_ = filter_chain_.add<filter_bloom> ();
+    filter_colorize_ = filter_chain_.add<filter_colorize> ();
 
     create_filters_dock ();
 
@@ -41,6 +42,7 @@ main_window::main_window (QWidget *parent)
     filter_sort_->set_enabled (false);
     filter_kuwahara_->set_enabled (false);
     filter_bloom_->set_enabled (false);
+    filter_colorize_->set_enabled (false);
 }
 
 void main_window::create_ui ()
@@ -254,8 +256,49 @@ void main_window::create_filters_dock ()
                 QString style = QString("background-color: %1;").arg (col.name ());
                 label_bloom_color_->setText (col.name ());
                 label_bloom_color_->setStyleSheet (style);
+
+                if (!is_live_) reprocess_and_show ();
             }
         });
+
+        h->addLayout (layout);
+
+        box->setLayout (h);
+        v->addWidget (box);
+    }
+
+    /// colorize
+    {
+        auto * box = new QGroupBox ("Tint");
+        auto * h = new QVBoxLayout (box);
+        h->addLayout (get_chk_ord_layout (box, filter_colorize_, chk_colorize_, spin_colorize_ord_));
+
+        auto * layout = new QVBoxLayout ();
+        btn_colorize_color_ = new QPushButton ("Select Color");
+        label_colorize_color_ = new QLabel ("No color selected");
+        label_colorize_color_->setAlignment (Qt::AlignCenter);
+
+        layout->addWidget (btn_colorize_color_);
+        layout->addWidget (label_colorize_color_);
+
+        connect (btn_colorize_color_, &QPushButton::clicked, [&]()
+        {
+            QColor col = QColorDialog::getColor (Qt::white, this, "Color selection");
+            if (col.isValid ())
+            {
+                filter_colorize_->set_tint_color (cv::Scalar{col.blue () / 1., col.green () / 1., col.red () / 1.});
+
+                QString style = QString("background-color: %1;").arg (col.name ());
+                label_colorize_color_->setText (col.name ());
+                label_colorize_color_->setStyleSheet (style);
+
+                if (!is_live_) reprocess_and_show ();
+            }
+        });
+
+        layout->addLayout (get_slider (box, "Strength:", slider_colorize_str_,
+            0, 0, 100,
+            [f = filter_colorize_] (int v) { f->set_strength (v / 100.); }));
 
         h->addLayout (layout);
 
