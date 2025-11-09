@@ -1,0 +1,53 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "grayscale",
+            "order": 0,
+            "parameters": {
+            }
+        },
+        {
+            "enabled": true,
+            "id": "canny",
+            "order": 1,
+            "parameters": {
+                "replace": false,
+                "thresh1": 48,
+                "thresh2": 102
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 2,
+            "parameters": {
+                "coeff": 0.44999998807907104,
+                "glow_color_b": 1,
+                "glow_color_g": 1,
+                "glow_color_r": 1,
+                "radius": 30,
+                "thresh": 0.3400000035762787
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 3,
+            "parameters": {
+                "radius": 0.07000000029802322,
+                "strength": 0.6299999952316284
+            }
+        },
+        {
+            "enabled": true,
+            "id": "film_noise",
+            "order": 4,
+            "parameters": {
+                "flicker": 0.3799999952316284,
+                "grain": 0.15000000596046448,
+                "scratches": 0
+            }
+        }
+    ]
+}

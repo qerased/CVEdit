@@ -1,0 +1,56 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "pixel_sort",
+            "order": 0,
+            "parameters": {
+                "axis": "Vertical",
+                "chunk": 20,
+                "mask_prob": 0.62,
+                "mode": "Blue",
+                "scope": "Cols",
+                "stride": 50,
+                "thr_hi": 190,
+                "thr_lo": 40,
+                "thresh_enabled": false,
+                "use_rand_chunk": false,
+                "use_random_mask": true
+            }
+        },
+        {
+            "enabled": true,
+            "id": "pixel_displace",
+            "order": 1,
+            "parameters": {
+                "bh": 12,
+                "bw": 12,
+                "shift": 24,
+                "speed": 45
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 2,
+            "parameters": {
+                "coeff": 0.4000000059604645,
+                "glow_color_b": 1,
+                "glow_color_g": 1,
+                "glow_color_r": 0,
+                "radius": 20,
+                "thresh": 0.47999998927116394
+            }
+        },
+        {
+            "enabled": true,
+            "id": "scanlines",
+            "order": 3,
+            "parameters": {
+                "k": 0.6200000047683716,
+                "period": 7,
+                "speed": 57
+            }
+        }
+    ]
+}

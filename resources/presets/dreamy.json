@@ -1,0 +1,52 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "gaussian_blur",
+            "order": 0,
+            "parameters": {
+                "k_size": 5
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 1,
+            "parameters": {
+                "coeff": 0.8399999737739563,
+                "glow_color_b": 0.8901960849761963,
+                "glow_color_g": 0.6901960968971252,
+                "glow_color_r": 1,
+                "radius": 30,
+                "thresh": 0.20999999344348907
+            }
+        },
+        {
+            "enabled": true,
+            "id": "kuwahara",
+            "order": 2,
+            "parameters": {
+                "k_size": 5
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 3,
+            "parameters": {
+                "radius": 0,
+                "strength": 0.10999999940395355
+            }
+        },
+        {
+            "enabled": true,
+            "id": "film_noise",
+            "order": 4,
+            "parameters": {
+                "flicker": 0,
+                "grain": 0.10000000149011612,
+                "scratches": 0
+            }
+        }
+    ]
+}

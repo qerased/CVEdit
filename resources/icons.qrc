@@ -2,5 +2,12 @@
     <qresource prefix="/">
         <file>test.png</file>
         <file>presets/old_tv.json</file>
+        <file>presets/collapse.json</file>
+        <file>presets/cyberpunk_neon.json</file>
+        <file>presets/dreamy.json</file>
+        <file>presets/horror_cam.json</file>
+        <file>presets/noir.json</file>
+        <file>presets/painting.json</file>
+        <file>presets/vaporwave.json</file>
     </qresource>
 </RCC>

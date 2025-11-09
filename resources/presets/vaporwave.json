@@ -1,0 +1,59 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "gradient_overlay",
+            "order": 0,
+            "parameters": {
+                "axis": 1,
+                "c0_b": 227,
+                "c0_g": 155,
+                "c0_r": 255,
+                "c1_b": 255,
+                "c1_g": 250,
+                "c1_r": 109,
+                "k": 0.6299999952316284
+            }
+        },
+        {
+            "enabled": true,
+            "id": "pixel_sort",
+            "order": 1,
+            "parameters": {
+                "axis": "Horizontal",
+                "chunk": 15,
+                "mask_prob": 0.05,
+                "mode": "Hue",
+                "scope": "Rows",
+                "stride": 30,
+                "thr_hi": 190,
+                "thr_lo": 40,
+                "thresh_enabled": false,
+                "use_rand_chunk": true,
+                "use_random_mask": true
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 2,
+            "parameters": {
+                "coeff": 0.4399999976158142,
+                "glow_color_b": 1,
+                "glow_color_g": 0.7019608020782471,
+                "glow_color_r": 1,
+                "radius": 20,
+                "thresh": 0.3400000035762787
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 3,
+            "parameters": {
+                "radius": 0,
+                "strength": 0.11999999731779099
+            }
+        }
+    ]
+}

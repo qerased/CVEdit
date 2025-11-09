@@ -1,0 +1,53 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "kuwahara",
+            "order": 0,
+            "parameters": {
+                "k_size": 21
+            }
+        },
+        {
+            "enabled": true,
+            "id": "gaussian_blur",
+            "order": 1,
+            "parameters": {
+                "k_size": 11
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 2,
+            "parameters": {
+                "coeff": 0.28999999165534973,
+                "glow_color_b": 0.43529412150382996,
+                "glow_color_g": 0.7450980544090271,
+                "glow_color_r": 1,
+                "radius": 30,
+                "thresh": 0.5699999928474426
+            }
+        },
+        {
+            "enabled": true,
+            "id": "colorize",
+            "order": 3,
+            "parameters": {
+                "k": 0.14000000059604645,
+                "tint_b": 191,
+                "tint_g": 220,
+                "tint_r": 240
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 4,
+            "parameters": {
+                "radius": 0.14000000059604645,
+                "strength": 0.4000000059604645
+            }
+        }
+    ]
+}

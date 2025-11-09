@@ -1,0 +1,52 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "hue_shift",
+            "order": 0,
+            "parameters": {
+                "deg_per_tick": 0.4399999976158142
+            }
+        },
+        {
+            "enabled": true,
+            "id": "pixel_sort",
+            "order": 1,
+            "parameters": {
+                "axis": "Horizontal",
+                "chunk": 0,
+                "mask_prob": 0,
+                "mode": "Hue",
+                "scope": "Rows",
+                "stride": 0,
+                "thr_hi": 60,
+                "thr_lo": 40,
+                "thresh_enabled": true,
+                "use_rand_chunk": false,
+                "use_random_mask": false
+            }
+        },
+        {
+            "enabled": true,
+            "id": "bloom",
+            "order": 3,
+            "parameters": {
+                "coeff": 1,
+                "glow_color_b": 0.8666666746139526,
+                "glow_color_g": 0.5411764979362488,
+                "glow_color_r": 0.8627451062202454,
+                "radius": 20,
+                "thresh": 0.6299999952316284
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 4,
+            "parameters": {
+                "radius": 0,
+                "strength": 0.3100000023841858
+            }
+        }
+    ]
+}
