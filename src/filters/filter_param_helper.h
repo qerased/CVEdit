@@ -11,7 +11,17 @@ inline QJsonObject filter_to_json (const void * obj, const QMetaObject & meta)
         const QMetaProperty prop = meta.property (i);
         if (!prop.isReadable () || QString (prop.name ()) == "object_name")
             continue;
-        out[prop.name ()] = QJsonValue::fromVariant (prop.readOnGadget (obj));
+        QVariant v = prop.readOnGadget (obj);
+        if (prop.isEnumType ())
+        {
+            const QMetaEnum me = prop.enumerator ();
+            const int iv = v.toInt ();
+            out[prop.name ()] = me.valueToKey (iv);
+        }
+        else
+        {
+            out[prop.name ()] = QJsonValue::fromVariant (v);
+        }
     }
     return out;
 }

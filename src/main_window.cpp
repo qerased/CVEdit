@@ -158,22 +158,22 @@ void main_window::create_filters_dock ()
         h->addLayout (get_chk_ord_layout (box, filter_sort_, chk_sort_, spin_sort_ord_));
 
         combo_sort_mode_ = new QComboBox (box);
-        combo_sort_mode_->addItem ("Luminosity", QVariant::fromValue (sort_mode::Luminosity));
-        combo_sort_mode_->addItem ("Red",        QVariant::fromValue (sort_mode::Red));
-        combo_sort_mode_->addItem ("Green",      QVariant::fromValue (sort_mode::Green));
-        combo_sort_mode_->addItem ("Blue",       QVariant::fromValue (sort_mode::Blue));
-        combo_sort_mode_->addItem ("Hue",        QVariant::fromValue (sort_mode::Hue));
+        combo_sort_mode_->addItem ("Luminosity", QVariant::fromValue (psort::sort_mode::Luminosity));
+        combo_sort_mode_->addItem ("Red",        QVariant::fromValue (psort::sort_mode::Red));
+        combo_sort_mode_->addItem ("Green",      QVariant::fromValue (psort::sort_mode::Green));
+        combo_sort_mode_->addItem ("Blue",       QVariant::fromValue (psort::sort_mode::Blue));
+        combo_sort_mode_->addItem ("Hue",        QVariant::fromValue (psort::sort_mode::Hue));
         h->addWidget (combo_sort_mode_);
 
         combo_sort_scope_ = new QComboBox (box);
-        combo_sort_scope_->addItem ("Global", QVariant::fromValue (sort_scope::Global));
-        combo_sort_scope_->addItem ("Rows", QVariant::fromValue (sort_scope::Rows));
-        combo_sort_scope_->addItem ("Cols", QVariant::fromValue (sort_scope::Cols));
+        combo_sort_scope_->addItem ("Global", QVariant::fromValue (psort::sort_scope::Global));
+        combo_sort_scope_->addItem ("Rows", QVariant::fromValue (psort::sort_scope::Rows));
+        combo_sort_scope_->addItem ("Cols", QVariant::fromValue (psort::sort_scope::Cols));
         h->addWidget (combo_sort_scope_);
 
         combo_sort_axis_ = new QComboBox (box);
-        combo_sort_axis_->addItem ("Horizontal", QVariant::fromValue (sort_axis::Horizontal));
-        combo_sort_axis_->addItem ("Vertical", QVariant::fromValue (sort_axis::Vertical));
+        combo_sort_axis_->addItem ("Horizontal", QVariant::fromValue (psort::sort_axis::Horizontal));
+        combo_sort_axis_->addItem ("Vertical", QVariant::fromValue (psort::sort_axis::Vertical));
         h->addWidget (combo_sort_axis_);
 
         h->addLayout (get_spin (box, "Chunk size:", spin_sort_chunk_,
@@ -207,9 +207,9 @@ void main_window::create_filters_dock ()
 
         box->setLayout (h);
         v->addWidget (box);
-        bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<sort_mode> ()); });
-        bind_combo (combo_sort_scope_, [f = filter_sort_] (const QVariant & v) { f->set_scope (v.value<sort_scope> ()); });
-        bind_combo (combo_sort_axis_, [f = filter_sort_] (const QVariant & v) { f->set_axis (v.value<sort_axis> ()); });
+        bind_combo (combo_sort_mode_, [f = filter_sort_] (const QVariant & v) { f->set_mode (v.value<psort::sort_mode> ()); });
+        bind_combo (combo_sort_scope_, [f = filter_sort_] (const QVariant & v) { f->set_scope (v.value<psort::sort_scope> ()); });
+        bind_combo (combo_sort_axis_, [f = filter_sort_] (const QVariant & v) { f->set_axis (v.value<psort::sort_axis> ()); });
     }
 
     /// kuwahara
@@ -989,7 +989,7 @@ void main_window::sync_ui_with_filters ()
             int mode_val = sort_params["mode"].toInt ();
             for (int i = 0; i < combo_sort_mode_->count (); i++)
             {
-                if (combo_sort_mode_->itemData (i).value<sort_mode> () == static_cast<sort_mode> (mode_val))
+                if (combo_sort_mode_->itemData (i).value<psort::sort_mode> () == static_cast<psort::sort_mode> (mode_val))
                 {
                     combo_sort_mode_->setCurrentIndex (i);
                     break;
@@ -1003,7 +1003,7 @@ void main_window::sync_ui_with_filters ()
             int scope_val = sort_params["scope"].toInt ();
             for (int i = 0; i < combo_sort_scope_->count (); i++)
             {
-                if (combo_sort_scope_->itemData (i).value<sort_scope> () == static_cast<sort_scope> (scope_val))
+                if (combo_sort_scope_->itemData (i).value<psort::sort_scope> () == static_cast<psort::sort_scope> (scope_val))
                 {
                     combo_sort_scope_->setCurrentIndex (i);
                     break;
@@ -1017,7 +1017,7 @@ void main_window::sync_ui_with_filters ()
             int axis_val = sort_params["axis"].toInt ();
             for (int i = 0; i < combo_sort_axis_->count (); i++)
             {
-                if (combo_sort_axis_->itemData (i).value<sort_axis> () == static_cast<sort_axis> (axis_val))
+                if (combo_sort_axis_->itemData (i).value<psort::sort_axis> () == static_cast<psort::sort_axis> (axis_val))
                 {
                     combo_sort_axis_->setCurrentIndex (i);
                     break;

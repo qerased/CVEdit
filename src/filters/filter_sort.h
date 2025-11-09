@@ -5,21 +5,30 @@
 #include <QMetaType>
 #include <random>
 
-enum class sort_mode { Luminosity, Red, Green, Blue, Hue};
-Q_DECLARE_METATYPE (sort_mode);
+namespace psort
+{
+    Q_NAMESPACE
 
-enum class sort_scope { Global, Rows, Cols};
-Q_DECLARE_METATYPE (sort_scope);
+    enum class sort_mode  { Luminosity, Red, Green, Blue, Hue };
+    Q_ENUM_NS(sort_mode)
 
-enum class sort_axis { Horizontal, Vertical};
-Q_DECLARE_METATYPE (sort_axis);
+    enum class sort_scope { Global, Rows, Cols };
+    Q_ENUM_NS(sort_scope)
+
+    enum class sort_axis  { Horizontal, Vertical };
+    Q_ENUM_NS(sort_axis)
+}
+
+Q_DECLARE_METATYPE (psort::sort_mode);
+Q_DECLARE_METATYPE (psort::sort_scope);
+Q_DECLARE_METATYPE (psort::sort_axis);
 
 struct sort_params
 {
     Q_GADGET
-    Q_PROPERTY (sort_mode mode MEMBER mode)
-    Q_PROPERTY (sort_scope scope MEMBER scope)
-    Q_PROPERTY (sort_axis axis MEMBER axis)
+    Q_PROPERTY(psort::sort_mode  mode  MEMBER mode)
+    Q_PROPERTY(psort::sort_scope scope MEMBER scope)
+    Q_PROPERTY(psort::sort_axis  axis  MEMBER axis)
 
     Q_PROPERTY (unsigned int chunk MEMBER chunk)
     Q_PROPERTY (unsigned int stride MEMBER stride)
@@ -34,9 +43,9 @@ struct sort_params
     Q_PROPERTY (bool use_rand_chunk MEMBER use_rand_chunk)
 
 public:
-    sort_mode mode{sort_mode::Luminosity};
-    sort_scope scope{sort_scope::Global};
-    sort_axis axis{sort_axis::Horizontal};
+    psort::sort_mode mode{psort::sort_mode::Luminosity};
+    psort::sort_scope scope{psort::sort_scope::Global};
+    psort::sort_axis axis{psort::sort_axis::Horizontal};
 
     unsigned int chunk{0}; /// 0 == all, >0 = size of interval
     unsigned int stride{0}; /// 0 == non-overlapping, >0 = step
@@ -63,17 +72,17 @@ public:
 
         switch (params_.scope)
         {
-            case sort_scope::Global: sort_global (mat); break;
-            case sort_scope::Rows:   sort_rows (mat); break;
-            case sort_scope::Cols:   sort_cols (mat); break;
+            case psort::sort_scope::Global: sort_global (mat); break;
+            case psort::sort_scope::Rows:   sort_rows (mat); break;
+            case psort::sort_scope::Cols:   sort_cols (mat); break;
         }
     }
 
-    void set_mode (const sort_mode mode) { params_.mode = mode; }
+    void set_mode (const psort::sort_mode mode) { params_.mode = mode; }
     void set_chunk (const unsigned int chunk){ params_.chunk = chunk; }
     void set_stride (const unsigned int stride) { params_.stride = stride; }
-    void set_scope (const sort_scope scope) { params_.scope = scope; }
-    void set_axis (const sort_axis axis) { params_.axis = axis; }
+    void set_scope (const psort::sort_scope scope) { params_.scope = scope; }
+    void set_axis (const psort::sort_axis axis) { params_.axis = axis; }
 
     void set_random_mask_enabled (const bool enabled) { params_.use_random_mask = enabled; }
     void set_mask_prob (const double probability) { params_.mask_prob = probability; }
@@ -119,17 +128,17 @@ private:
     void sort_rows (cv::Mat & mat);
     void sort_cols (cv::Mat & mat);
 
-    int key_bins () const { return params_.mode == sort_mode::Hue ? 180 : 256; }
+    int key_bins () const { return params_.mode == psort::sort_mode::Hue ? 180 : 256; }
     uint8_t pixel_key_bgr (const cv::Vec3b & p) const
     {
         switch (params_.mode)
         {
-            case sort_mode::Red:   return p[2];
-            case sort_mode::Green: return p[1];
-            case sort_mode::Blue:  return p[0];
-            case sort_mode::Luminosity:
+            case psort::sort_mode::Red:   return p[2];
+            case psort::sort_mode::Green: return p[1];
+            case psort::sort_mode::Blue:  return p[0];
+            case psort::sort_mode::Luminosity:
                 return static_cast<uint8_t> (0.299 * p[2] + 0.587 * p[1] + 0.114 * p[0]);
-            case sort_mode::Hue:;
+            case psort::sort_mode::Hue:;
         }
         return 0;
     }

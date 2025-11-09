@@ -36,7 +36,7 @@ void filter_sort::sort_global (cv::Mat & mat)
     const int pixels = mat.rows * mat.cols;
     std::vector<uint8_t> keys (pixels);
 
-    if (params_.mode == sort_mode::Hue)
+    if (params_.mode == psort::sort_mode::Hue)
     {
         cv::Mat hsv;
         cv::cvtColor (mat, hsv, cv::COLOR_BGR2HSV);
@@ -80,13 +80,13 @@ void filter_sort::sort_rows (cv::Mat &mat)
     std::vector<cv::Vec3b> buf;
     buf.reserve (chunk);
 
-    const int dx = params_.axis == sort_axis::Vertical ? stride : 1;
-    const int dy = params_.axis == sort_axis::Vertical ? 1 : stride;
+    const int dx = params_.axis == psort::sort_axis::Vertical ? stride : 1;
+    const int dy = params_.axis == psort::sort_axis::Vertical ? 1 : stride;
 
     std::uniform_int_distribution<int> chunk_jitter (std::max (8u, params_.chunk / 2), std::max (params_.chunk * 3/2, 10u));
-    const unsigned int xlen = params_.axis == sort_axis::Vertical ? (params_.use_rand_chunk ? chunk_jitter(rng_) : chunk) : w;
+    const unsigned int xlen = params_.axis == psort::sort_axis::Vertical ? (params_.use_rand_chunk ? chunk_jitter(rng_) : chunk) : w;
 
-    const unsigned int yloop = params_.axis == sort_axis::Vertical ? 1 : chunk;
+    const unsigned int yloop = params_.axis == psort::sort_axis::Vertical ? 1 : chunk;
 
     const bool use_mask = params_.use_random_mask && (params_.stride > 0);
     const double auto_p = (params_.stride > 0) ? (1.0 / static_cast<double> (params_.stride)) : 1.0;
@@ -113,7 +113,7 @@ void filter_sort::sort_rows (cv::Mat &mat)
                 keys.resize (len);
                 buf.resize (len);
 
-                if (params_.mode == sort_mode::Hue)
+                if (params_.mode == psort::sort_mode::Hue)
                 {
                     cv::Mat row_mat (1, w, CV_8UC3, row);
                     cv::Mat hsv_row;
@@ -168,8 +168,8 @@ void filter_sort::sort_rows (cv::Mat &mat)
                     }
                 }
 
-                if ((params_.axis == sort_axis::Vertical && chunk == 0) ||
-                     params_.axis == sort_axis::Horizontal)
+                if ((params_.axis == psort::sort_axis::Vertical && chunk == 0) ||
+                     params_.axis == psort::sort_axis::Horizontal)
                     break;
             }
         }
@@ -181,7 +181,7 @@ void filter_sort::sort_cols (cv::Mat & mat)
     cv::Mat rot;
     cv::rotate (mat, rot, cv::ROTATE_90_CLOCKWISE);
     auto save = params_.axis;
-    params_.axis = params_.axis == sort_axis::Vertical ? sort_axis::Horizontal : sort_axis::Vertical;
+    params_.axis = params_.axis == psort::sort_axis::Vertical ? psort::sort_axis::Horizontal : psort::sort_axis::Vertical;
     sort_rows (rot);
     params_.axis = save;
     cv::rotate (rot, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
