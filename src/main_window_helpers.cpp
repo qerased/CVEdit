@@ -1,6 +1,6 @@
 #include "main_window.h"
 
-void main_window::bind_toggle (QCheckBox * chk, filter * f)
+void main_window::bind_toggle (QCheckBox *& chk, filter * f)
 {
     connect(chk, &QCheckBox::toggled, this,
             [this, f] (bool on) {
@@ -9,7 +9,7 @@ void main_window::bind_toggle (QCheckBox * chk, filter * f)
             });
 }
 
-void main_window::bind_chkbox (QCheckBox * chk, std::function<void(bool)> trigger)
+void main_window::bind_chkbox (QCheckBox *& chk, std::function<void(bool)> trigger)
 {
     connect(chk, &QCheckBox::stateChanged, this,
             [this, trigger] (bool on) {
@@ -18,7 +18,7 @@ void main_window::bind_chkbox (QCheckBox * chk, std::function<void(bool)> trigge
             });
 }
 
-void main_window::bind_slider (QSlider * s, std::function<void(int)> setter)
+void main_window::bind_slider (QSlider *& s, std::function<void(int)> setter)
 {
     connect(s, &QSlider::valueChanged, this,
             [this, setter] (int v) {
@@ -27,7 +27,7 @@ void main_window::bind_slider (QSlider * s, std::function<void(int)> setter)
             });
 }
 
-void main_window::bind_spin (QSpinBox * s, std::function<void(int)> setter)
+void main_window::bind_spin (QSpinBox *& s, std::function<void(int)> setter)
 {
     connect(s, &QSpinBox::valueChanged, this,
         [this, setter](int v)
@@ -37,7 +37,7 @@ void main_window::bind_spin (QSpinBox * s, std::function<void(int)> setter)
         });
 }
 
-void main_window::bind_combo (QComboBox * c, std::function<void(const QVariant &)> setter)
+void main_window::bind_combo (QComboBox *& c, std::function<void(const QVariant &)> setter)
 {
     connect (c, qOverload<int> (&QComboBox::currentIndexChanged), this,
         [this, c, setter] (int idx)
@@ -47,7 +47,7 @@ void main_window::bind_combo (QComboBox * c, std::function<void(const QVariant &
         });
 }
 
-QHBoxLayout * main_window::get_chk_ord_layout (QGroupBox * box, filter * f, QCheckBox * chk, QSpinBox * spin)
+QHBoxLayout * main_window::get_chk_ord_layout (QGroupBox *& box, filter * f, QCheckBox *& chk, QSpinBox *& spin)
 {
     auto * gen_layout = new QHBoxLayout ();
 
@@ -71,7 +71,7 @@ QHBoxLayout * main_window::get_chk_ord_layout (QGroupBox * box, filter * f, QChe
 }
 
 QHBoxLayout * main_window::get_slider (
-    QGroupBox * box, QString label, QSlider * slider,
+    QGroupBox *& box, QString label, QSlider *& slider,
     int base_val, int min_val, int max_val,
     std::function<void(int)> slider_f)
 {
@@ -89,7 +89,7 @@ QHBoxLayout * main_window::get_slider (
 }
 
 QHBoxLayout * main_window::get_spin (
-    QGroupBox *box, QString label, QSpinBox *spin,
+    QGroupBox *& box, QString label, QSpinBox *& spin,
     int base_val, int min_val, int max_val,
     std::function<void(int)> spin_f)
 {
@@ -107,8 +107,8 @@ QHBoxLayout * main_window::get_spin (
 }
 
 QHBoxLayout * main_window::get_checkbox (
-    QGroupBox *box, QString label,
-    QCheckBox * chk,
+    QGroupBox *& box, QString label,
+    QCheckBox *& chk,
     std::function<void(bool)> trigger)
 {
     auto * layout = new QHBoxLayout ();

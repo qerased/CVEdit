@@ -1,4 +1,6 @@
 #include "main_window.h"
+
+#include <iostream>
 #include <QLabel>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -794,6 +796,7 @@ void main_window::load_filter_preset ()
     if (!ok)
       statusBar ()->showMessage ("Failed to load preset (some filters may have errors)", 3000);
 
+    sync_ui_with_filters ();
 
     reprocess_and_show ();
 
@@ -831,4 +834,363 @@ void main_window::save_filter_preset ()
 
     file.close ();
     statusBar ()->showMessage (QString ("Preset saved: %1").arg (QFileInfo (path).fileName ()), 3000);
+}
+
+void main_window::sync_ui_with_filters ()
+{
+    // Grayscale
+    {
+        if (chk_grayscale_) chk_grayscale_->setChecked (filter_grayscale_->enabled ());
+        if (spin_grayscale_ord_) spin_grayscale_ord_->setValue (filter_grayscale_->num_order ());
+    }
+
+    // Blur
+    {
+        if (chk_blur_) chk_blur_->setChecked (filter_blur_->enabled ());
+        if (spin_blur_ord_) spin_blur_ord_->setValue (filter_blur_->num_order ());
+        if (slider_blur_)
+        {
+            QJsonObject params = filter_blur_->parameters ();
+            if (params.contains ("k_size"))
+            {
+                slider_blur_->blockSignals (true);
+                slider_blur_->setValue (params["k_size"].toInt ());
+                slider_blur_->blockSignals (false);
+            }
+        }
+    }
+
+    // Canny
+    {
+        if (chk_canny_) chk_canny_->setChecked (filter_canny_->enabled ());
+        if (spin_canny_ord_) spin_canny_ord_->setValue (filter_canny_->num_order ());
+        if (chk_canny_replace_)
+        {
+            QJsonObject params = filter_canny_->parameters ();
+            if (params.contains ("replace"))
+            {
+                chk_canny_replace_->blockSignals (true);
+                chk_canny_replace_->setChecked (params["replace"].toBool ());
+                chk_canny_replace_->blockSignals (false);
+            }
+        }
+        if (slider_canny_thr1)
+        {
+            QJsonObject params = filter_canny_->parameters ();
+            if (params.contains ("thresh1"))
+            {
+                slider_canny_thr1->blockSignals (true);
+                slider_canny_thr1->setValue (static_cast<int> (params["thresh1"].toDouble ()));
+                slider_canny_thr1->blockSignals (false);
+            }
+        }
+        if (slider_canny_thr2)
+        {
+            QJsonObject params = filter_canny_->parameters ();
+            if (params.contains ("thresh2"))
+            {
+                slider_canny_thr2->blockSignals (true);
+                slider_canny_thr2->setValue (static_cast<int> (params["thresh2"].toDouble ()));
+                slider_canny_thr2->blockSignals (false);
+            }
+        }
+    }
+
+    // Shake
+    {
+        if (chk_shake_) chk_shake_->setChecked (filter_shake_->enabled ());
+        if (spin_shake_ord_) spin_shake_ord_->setValue (filter_shake_->num_order ());
+    }
+
+    // Sort
+    {
+        if (chk_sort_) chk_sort_->setChecked (filter_sort_->enabled ());
+        if (spin_sort_ord_) spin_sort_ord_->setValue (filter_sort_->num_order ());
+        QJsonObject sort_params = filter_sort_->parameters ();
+        if (combo_sort_mode_ && sort_params.contains ("mode"))
+        {
+            combo_sort_mode_->blockSignals (true);
+            int mode_val = sort_params["mode"].toInt ();
+            for (int i = 0; i < combo_sort_mode_->count (); i++)
+            {
+                if (combo_sort_mode_->itemData (i).value<sort_mode> () == static_cast<sort_mode> (mode_val))
+                {
+                    combo_sort_mode_->setCurrentIndex (i);
+                    break;
+                }
+            }
+            combo_sort_mode_->blockSignals (false);
+        }
+        if (combo_sort_scope_ && sort_params.contains ("scope"))
+        {
+            combo_sort_scope_->blockSignals (true);
+            int scope_val = sort_params["scope"].toInt ();
+            for (int i = 0; i < combo_sort_scope_->count (); i++)
+            {
+                if (combo_sort_scope_->itemData (i).value<sort_scope> () == static_cast<sort_scope> (scope_val))
+                {
+                    combo_sort_scope_->setCurrentIndex (i);
+                    break;
+                }
+            }
+            combo_sort_scope_->blockSignals (false);
+        }
+        if (combo_sort_axis_ && sort_params.contains ("axis"))
+        {
+            combo_sort_axis_->blockSignals (true);
+            int axis_val = sort_params["axis"].toInt ();
+            for (int i = 0; i < combo_sort_axis_->count (); i++)
+            {
+                if (combo_sort_axis_->itemData (i).value<sort_axis> () == static_cast<sort_axis> (axis_val))
+                {
+                    combo_sort_axis_->setCurrentIndex (i);
+                    break;
+                }
+            }
+            combo_sort_axis_->blockSignals (false);
+        }
+        if (spin_sort_chunk_ && sort_params.contains ("chunk"))
+        {
+            spin_sort_chunk_->blockSignals (true);
+            spin_sort_chunk_->setValue (static_cast<int> (sort_params["chunk"].toDouble ()));
+            spin_sort_chunk_->blockSignals (false);
+        }
+        if (spin_sort_stride_ && sort_params.contains ("stride"))
+        {
+            spin_sort_stride_->blockSignals (true);
+            spin_sort_stride_->setValue (static_cast<int> (sort_params["stride"].toDouble ()));
+            spin_sort_stride_->blockSignals (false);
+        }
+        if (chk_sort_mask_ && sort_params.contains ("use_random_mask"))
+        {
+            chk_sort_mask_->blockSignals (true);
+            chk_sort_mask_->setChecked (sort_params["use_random_mask"].toBool ());
+            chk_sort_mask_->blockSignals (false);
+        }
+        if (slider_sort_mask_prob_ && sort_params.contains ("mask_prob"))
+        {
+            slider_sort_mask_prob_->blockSignals (true);
+            slider_sort_mask_prob_->setValue (static_cast<int> (sort_params["mask_prob"].toDouble () * 100));
+            slider_sort_mask_prob_->blockSignals (false);
+        }
+        if (chk_sort_thr_enabled_ && sort_params.contains ("thresh_enabled"))
+        {
+            chk_sort_thr_enabled_->blockSignals (true);
+            chk_sort_thr_enabled_->setChecked (sort_params["thresh_enabled"].toBool ());
+            chk_sort_thr_enabled_->blockSignals (false);
+        }
+        if (slider_sort_thr_lo_ && sort_params.contains ("thr_lo"))
+        {
+            slider_sort_thr_lo_->blockSignals (true);
+            slider_sort_thr_lo_->setValue (static_cast<int> (sort_params["thr_lo"].toDouble ()));
+            slider_sort_thr_lo_->blockSignals (false);
+        }
+        if (slider_sort_thr_hi_ && sort_params.contains ("thr_hi"))
+        {
+            slider_sort_thr_hi_->blockSignals (true);
+            slider_sort_thr_hi_->setValue (static_cast<int> (sort_params["thr_hi"].toDouble ()));
+            slider_sort_thr_hi_->blockSignals (false);
+        }
+        if (chk_sort_rand_chunk_ && sort_params.contains ("use_rand_chunk"))
+        {
+            chk_sort_rand_chunk_->blockSignals (true);
+            chk_sort_rand_chunk_->setChecked (sort_params["use_rand_chunk"].toBool ());
+            chk_sort_rand_chunk_->blockSignals (false);
+        }
+    }
+
+    // Kuwahara
+    {
+        if (chk_kuwahara_) chk_kuwahara_->setChecked (filter_kuwahara_->enabled ());
+        if (spin_kuwahara_ord_) spin_kuwahara_ord_->setValue (filter_kuwahara_->num_order ());
+        if (spin_kuwahara_)
+        {
+            QJsonObject params = filter_kuwahara_->parameters ();
+            if (params.contains ("k_size"))
+            {
+                spin_kuwahara_->blockSignals (true);
+                spin_kuwahara_->setValue (params["k_size"].toInt ());
+                spin_kuwahara_->blockSignals (false);
+            }
+        }
+    }
+
+    // Bloom
+    {
+        if (chk_bloom_) chk_bloom_->setChecked (filter_bloom_->enabled ());
+        if (spin_bloom_ord_) spin_bloom_ord_->setValue (filter_bloom_->num_order ());
+        QJsonObject bloom_params = filter_bloom_->parameters ();
+        if (slider_bloom_thresh_ && bloom_params.contains ("thresh"))
+        {
+            slider_bloom_thresh_->blockSignals (true);
+            slider_bloom_thresh_->setValue (static_cast<int> (bloom_params["thresh"].toDouble () * 100));
+            slider_bloom_thresh_->blockSignals (false);
+        }
+        if (slider_bloom_radius_ && bloom_params.contains ("radius"))
+        {
+            slider_bloom_radius_->blockSignals (true);
+            slider_bloom_radius_->setValue (static_cast<int> (bloom_params["radius"].toDouble ()));
+            slider_bloom_radius_->blockSignals (false);
+        }
+        if (slider_bloom_coeff_ && bloom_params.contains ("coeff"))
+        {
+            slider_bloom_coeff_->blockSignals (true);
+            slider_bloom_coeff_->setValue (static_cast<int> (bloom_params["coeff"].toDouble () * 100));
+            slider_bloom_coeff_->blockSignals (false);
+        }
+    }
+
+    // Colorize
+    {
+        if (chk_colorize_) chk_colorize_->setChecked (filter_colorize_->enabled ());
+        if (spin_colorize_ord_) spin_colorize_ord_->setValue (filter_colorize_->num_order ());
+        QJsonObject colorize_params = filter_colorize_->parameters ();
+        if (slider_colorize_str_ && colorize_params.contains ("k"))
+        {
+            slider_colorize_str_->blockSignals (true);
+            slider_colorize_str_->setValue (static_cast<int> (colorize_params["k"].toDouble () * 100));
+            slider_colorize_str_->blockSignals (false);
+        }
+    }
+
+    // Vignette
+    {
+        if (chk_vignette_) chk_vignette_->setChecked (filter_vignette_->enabled ());
+        if (spin_vignette_ord_) spin_vignette_ord_->setValue (filter_vignette_->num_order ());
+        QJsonObject vignette_params = filter_vignette_->parameters ();
+        if (slider_vignette_str_ && vignette_params.contains ("strength"))
+        {
+            slider_vignette_str_->blockSignals (true);
+            slider_vignette_str_->setValue (static_cast<int> (vignette_params["strength"].toDouble () * 100));
+            slider_vignette_str_->blockSignals (false);
+        }
+        if (slider_vignette_radius_ && vignette_params.contains ("radius"))
+        {
+            slider_vignette_radius_->blockSignals (true);
+            slider_vignette_radius_->setValue (static_cast<int> (vignette_params["radius"].toDouble () * 100));
+            slider_vignette_radius_->blockSignals (false);
+        }
+    }
+
+    // Film Noise
+    {
+        if (chk_film_noise_) chk_film_noise_->setChecked (filter_film_noise_->enabled ());
+        if (spin_film_noise_ord_) spin_film_noise_ord_->setValue (filter_film_noise_->num_order ());
+        QJsonObject film_noise_params = filter_film_noise_->parameters ();
+        if (slider_film_noise_grain_ && film_noise_params.contains ("grain"))
+        {
+            slider_film_noise_grain_->blockSignals (true);
+            slider_film_noise_grain_->setValue (static_cast<int> (film_noise_params["grain"].toDouble () * 100));
+            slider_film_noise_grain_->blockSignals (false);
+        }
+        if (slider_film_noise_scrathes_ && film_noise_params.contains ("scratches"))
+        {
+            slider_film_noise_scrathes_->blockSignals (true);
+            slider_film_noise_scrathes_->setValue (static_cast<int> (film_noise_params["scratches"].toDouble () * 100));
+            slider_film_noise_scrathes_->blockSignals (false);
+        }
+        if (slider_film_noise_flicker_ && film_noise_params.contains ("flicker"))
+        {
+            slider_film_noise_flicker_->blockSignals (true);
+            slider_film_noise_flicker_->setValue (static_cast<int> (film_noise_params["flicker"].toDouble () * 100));
+            slider_film_noise_flicker_->blockSignals (false);
+        }
+    }
+
+    // Scanlines
+    {
+        if (chk_scanlines_) chk_scanlines_->setChecked (filter_scanlines_->enabled ());
+        if (spin_scanlines_ord_) spin_scanlines_ord_->setValue (filter_scanlines_->num_order ());
+        QJsonObject scanlines_params = filter_scanlines_->parameters ();
+        if (slider_scanlines_darkness_ && scanlines_params.contains ("k"))
+        {
+            slider_scanlines_darkness_->blockSignals (true);
+            slider_scanlines_darkness_->setValue (static_cast<int> (scanlines_params["k"].toDouble () * 100));
+            slider_scanlines_darkness_->blockSignals (false);
+        }
+        if (slider_scanlines_density_ && scanlines_params.contains ("period"))
+        {
+            slider_scanlines_density_->blockSignals (true);
+            slider_scanlines_density_->setValue (scanlines_params["period"].toInt ());
+            slider_scanlines_density_->blockSignals (false);
+        }
+        if (slider_scanlines_speed_ && scanlines_params.contains ("speed"))
+        {
+            slider_scanlines_speed_->blockSignals (true);
+            slider_scanlines_speed_->setValue (static_cast<int> (scanlines_params["speed"].toDouble ()));
+            slider_scanlines_speed_->blockSignals (false);
+        }
+    }
+
+    // Hue Shift
+    {
+        if (chk_hue_shift_) chk_hue_shift_->setChecked (filter_hue_shift_->enabled ());
+        if (spin_hue_shift_ord_) spin_hue_shift_ord_->setValue (filter_hue_shift_->num_order ());
+        QJsonObject hue_shift_params = filter_hue_shift_->parameters ();
+        if (slider_hue_shift_speed_ && hue_shift_params.contains ("deg_per_tick"))
+        {
+            slider_hue_shift_speed_->blockSignals (true);
+            slider_hue_shift_speed_->setValue (static_cast<int> (hue_shift_params["deg_per_tick"].toDouble () * 100));
+            slider_hue_shift_speed_->blockSignals (false);
+        }
+    }
+
+    // Pixel Displace
+    {
+        if (chk_pixel_displace_) chk_pixel_displace_->setChecked (filter_pixel_displace_->enabled ());
+        if (spin_pixel_displace_ord_) spin_pixel_displace_ord_->setValue (filter_pixel_displace_->num_order ());
+        QJsonObject pixel_displace_params = filter_pixel_displace_->parameters ();
+        if (spin_pixel_displace_bw_ && pixel_displace_params.contains ("bw"))
+        {
+            spin_pixel_displace_bw_->blockSignals (true);
+            spin_pixel_displace_bw_->setValue (pixel_displace_params["bw"].toInt ());
+            spin_pixel_displace_bw_->blockSignals (false);
+        }
+        if (spin_pixel_displace_bh_ && pixel_displace_params.contains ("bh"))
+        {
+            spin_pixel_displace_bh_->blockSignals (true);
+            spin_pixel_displace_bh_->setValue (pixel_displace_params["bh"].toInt ());
+            spin_pixel_displace_bh_->blockSignals (false);
+        }
+        if (spin_pixel_displace_shift_ && pixel_displace_params.contains ("shift"))
+        {
+            spin_pixel_displace_shift_->blockSignals (true);
+            spin_pixel_displace_shift_->setValue (pixel_displace_params["shift"].toInt ());
+            spin_pixel_displace_shift_->blockSignals (false);
+        }
+        if (spin_pixel_displace_speed_ && pixel_displace_params.contains ("speed"))
+        {
+            spin_pixel_displace_speed_->blockSignals (true);
+            spin_pixel_displace_speed_->setValue (pixel_displace_params["speed"].toInt ());
+            spin_pixel_displace_speed_->blockSignals (false);
+        }
+    }
+
+    // Gradient Overlay
+    {
+        if (chk_gradient_) chk_gradient_->setChecked (filter_gradient_overlay_->enabled ());
+        if (spin_gradient_ord_) spin_gradient_ord_->setValue (filter_gradient_overlay_->num_order ());
+        QJsonObject gradient_params = filter_gradient_overlay_->parameters ();
+        if (slider_gradient_strength_ && gradient_params.contains ("k"))
+        {
+            slider_gradient_strength_->blockSignals (true);
+            slider_gradient_strength_->setValue (static_cast<int> (gradient_params["k"].toDouble () * 100));
+            slider_gradient_strength_->blockSignals (false);
+        }
+        if (combo_gradient_axis_ && gradient_params.contains ("axis"))
+        {
+            combo_gradient_axis_->blockSignals (true);
+            int axis_val = gradient_params["axis"].toInt ();
+            // Найти индекс по значению
+            for (int i = 0; i < combo_gradient_axis_->count (); i++)
+            {
+                if (combo_gradient_axis_->itemData (i).toInt () == axis_val)
+                {
+                    combo_gradient_axis_->setCurrentIndex (i);
+                    break;
+                }
+            }
+            combo_gradient_axis_->blockSignals (false);
+        }
+    }
 }
