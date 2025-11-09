@@ -11,22 +11,36 @@ Each filter can be toggled on/off, re-ordered, and tuned in real time.
 - Filter chain with ordering control (per-filter numeric order)
 - Live parameter tweaking with immediate preview
 - Take a screenshot of the current preview
+- Save/Load filter presets
 
 ### Available filters
 - Grayscale
-- Gaussian Blur (intensity via kernel size)
-- Canny Edge Detection (two thresholds, Replace/Overlay modes)
-- Glitch/Shake (animated warp; depends on tick number)
+- Gaussian Blur
+- Canny Edge Detection
+- Shake
 - Pixel Sort
-  - Mode: Luminosity, Red, Green, Blue, Hue
-  - Scope: Global, Rows, Cols
-  - Axis: Horizontal, Vertical
-  - Chunk/Stride: segment length and step
-- Kuwahara (painterly effect; window size)
-- Bloom (Threshold/Radius/Strength, custom glow color)
+- Kuwahara
+- Bloom
+- Tint/Colorize
+- Vignette
+- Film Noise
+- Scanlines
+- Pixel Displace
+- Gradient Overlay
+
+### Available presets
+- Old TV
+- Digital Collapse
+- Dreamy colors
+- Cyberpunk Neon
+- Horror Cam
+- Noir
+- Painting
+- Vaporwave
 
 ### Testing
 - A test image is embedded as a Qt resource (`:/test.png`). Use File → "Show Test Image" to quickly try filters.
+- Test filter presets are embedded as a Qt resource (`:/presets/*.json`). Use presets dock menu to access them.
 
 ---
 
@@ -75,8 +89,6 @@ Filters panel (Dock):
 ## Roadmap / Ideas
 - Alpha-channel support in `utils::load_image_mat`
 - Optional downscale in preview for live sources; buffer reuse to reduce copies
-- App icon and a small sample assets set
-- Filter presets saving/loading
 - Multithreading for faster rendering
 
 ## Examples
