@@ -6,10 +6,10 @@
 struct colorize_params
 {
     Q_GADGET
-    Q_PROPERTY (float k)
-    Q_PROPERTY (unsigned int tint_b)
-    Q_PROPERTY (unsigned int tint_g)
-    Q_PROPERTY (unsigned int tint_r)
+    Q_PROPERTY (float k MEMBER k)
+    Q_PROPERTY (unsigned int tint_b MEMBER tint_b)
+    Q_PROPERTY (unsigned int tint_g MEMBER tint_g)
+    Q_PROPERTY (unsigned int tint_r MEMBER tint_r)
 
 public:
     float k{0};

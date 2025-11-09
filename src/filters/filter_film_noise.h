@@ -5,9 +5,9 @@
 struct film_noise_params
 {
     Q_GADGET
-    Q_PROPERTY (float grain)
-    Q_PROPERTY (float scratches)
-    Q_PROPERTY (float flicker)
+    Q_PROPERTY (float grain MEMBER grain)
+    Q_PROPERTY (float scratches MEMBER scratches)
+    Q_PROPERTY (float flicker MEMBER flicker)
 
 public:
     float grain{0.25f};

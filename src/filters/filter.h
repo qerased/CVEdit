@@ -2,6 +2,7 @@
 #define CVEDIT_FILTER_H
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <QJsonArray>
 
 #include "filter_param_helper.h"
 
@@ -29,6 +30,8 @@ public:
     {
         num_order_ = new_ord;
     }
+
+    int num_order () const { return num_order_; }
 
     virtual QJsonObject parameters () const { return QJsonObject (); }
     virtual bool set_parameters (const QJsonObject & json) { return true; }
@@ -72,6 +75,87 @@ public:
     {
         for (auto & f : filters_)
             f->set_enabled (false);
+    }
+
+    QJsonObject to_json () const
+    {
+        QJsonObject result;
+        QJsonArray filters_array;
+
+        for (const auto & f : filters_)
+        {
+            if (!f->enabled ())
+                continue;
+
+            QJsonObject filter_obj;
+            filter_obj["id"] = f->id ();
+            filter_obj["enabled"] = f->enabled ();
+            filter_obj["order"] = f->num_order_;
+            filter_obj["parameters"] = f->parameters ();
+
+            filters_array.append (filter_obj);
+        }
+
+        result["filters"] = filters_array;
+        return result;
+    }
+
+    bool from_json (const QJsonObject & json)
+    {
+        if (!json.contains ("filters") || !json["filters"].isArray ())
+            return false;
+
+        disable_all ();
+
+        QJsonArray filters_array = json["filters"].toArray ();
+        bool all_ok = true;
+
+        for (const auto & filter_val : filters_array)
+        {
+            if (!filter_val.isObject ())
+            {
+                all_ok = false;
+                continue;
+            }
+
+            QJsonObject filter_obj = filter_val.toObject ();
+
+            if (!filter_obj.contains ("id") || !filter_obj["id"].isString ())
+            {
+                all_ok = false;
+                continue;
+            }
+
+            QString filter_id = filter_obj["id"].toString ();
+
+            filter * found_filter = nullptr;
+            for (auto & f : filters_)
+            {
+                if (QString (f->id ()) == filter_id)
+                {
+                    found_filter = f.get ();
+                    break;
+                }
+            }
+
+            if (!found_filter)
+                continue;
+
+            if (filter_obj.contains ("enabled") && filter_obj["enabled"].isBool ())
+                found_filter->set_enabled (filter_obj["enabled"].toBool ());
+
+            if (filter_obj.contains ("order") && filter_obj["order"].isDouble ())
+                found_filter->set_num_order (filter_obj["order"].toInt ());
+
+            if (filter_obj.contains ("parameters") && filter_obj["parameters"].isObject ())
+            {
+                QJsonObject params = filter_obj["parameters"].toObject ();
+                if (!found_filter->set_parameters (params))
+                    all_ok = false;
+            }
+        }
+
+        return all_ok;
     }
 
     std::vector<std::unique_ptr<filter>> & filters () { return filters_; }

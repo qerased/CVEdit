@@ -6,8 +6,8 @@
 struct vignette_params
 {
     Q_GADGET
-    Q_PROPERTY (float strength)
-    Q_PROPERTY (float radius)
+    Q_PROPERTY (float strength MEMBER strength)
+    Q_PROPERTY (float radius MEMBER radius)
 
 public:
     float strength{0.5f};

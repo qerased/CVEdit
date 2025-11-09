@@ -5,7 +5,7 @@
 struct blur_params
 {
     Q_GADGET
-    Q_PROPERTY (int k_size)
+    Q_PROPERTY (int k_size MEMBER k_size)
 
 public:
     int k_size{5};

@@ -46,6 +46,9 @@ private slots:
 
     void save_screenshot ();
 
+    void save_filter_preset ();
+    void load_filter_preset ();
+
 private:
     void create_ui ();
     void create_menus ();
@@ -84,6 +87,9 @@ private:
 
     QAction * act_start_webcam_ = nullptr;
     QAction * act_stop_         = nullptr;
+
+    QAction * act_load_preset_  = nullptr;
+    QAction * act_save_preset_  = nullptr;
 
     QAction * act_screenshot_   = nullptr;
 

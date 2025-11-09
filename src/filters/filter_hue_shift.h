@@ -6,7 +6,7 @@
 struct hue_shift_params
 {
     Q_GADGET
-    Q_PROPERTY (float deg_per_tick)
+    Q_PROPERTY (float deg_per_tick MEMBER deg_per_tick)
 
 public:
     float deg_per_tick{1.2f};

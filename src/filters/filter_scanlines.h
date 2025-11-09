@@ -6,9 +6,9 @@
 struct scanlines_params
 {
     Q_GADGET
-    Q_PROPERTY (int period)
-    Q_PROPERTY (float k)
-    Q_PROPERTY (float speed)
+    Q_PROPERTY (int period MEMBER period)
+    Q_PROPERTY (float k MEMBER k)
+    Q_PROPERTY (float speed MEMBER speed)
 
 public:
     int period{2};

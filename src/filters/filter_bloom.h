@@ -5,13 +5,13 @@
 struct bloom_params
 {
     Q_GADGET
-    Q_PROPERTY (float thresh)
-    Q_PROPERTY (float radius)
-    Q_PROPERTY (float coeff)
+    Q_PROPERTY (float thresh MEMBER thresh)
+    Q_PROPERTY (float radius MEMBER radius)
+    Q_PROPERTY (float coeff MEMBER coeff)
 
-    Q_PROPERTY (float glow_color_b)
-    Q_PROPERTY (float glow_color_g)
-    Q_PROPERTY (float glow_color_r)
+    Q_PROPERTY (float glow_color_b MEMBER glow_color_b)
+    Q_PROPERTY (float glow_color_g MEMBER glow_color_g)
+    Q_PROPERTY (float glow_color_r MEMBER glow_color_r)
 
 public:
     float thresh{0.7};

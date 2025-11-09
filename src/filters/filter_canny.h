@@ -6,9 +6,9 @@
 struct canny_params
 {
     Q_GADGET
-    Q_PROPERTY (double thresh1)
-    Q_PROPERTY (double thresh2)
-    Q_PROPERTY (bool replace)
+    Q_PROPERTY (double thresh1 MEMBER thresh1)
+    Q_PROPERTY (double thresh2 MEMBER thresh2)
+    Q_PROPERTY (bool replace MEMBER replace)
 public:
     double thresh1{100};
     double thresh2{200};

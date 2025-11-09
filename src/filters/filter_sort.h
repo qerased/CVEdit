@@ -17,21 +17,21 @@ Q_DECLARE_METATYPE (sort_axis);
 struct sort_params
 {
     Q_GADGET
-    Q_PROPERTY (sort_mode mode)
-    Q_PROPERTY (sort_scope scope)
-    Q_PROPERTY (sort_axis axis)
+    Q_PROPERTY (sort_mode mode MEMBER mode)
+    Q_PROPERTY (sort_scope scope MEMBER scope)
+    Q_PROPERTY (sort_axis axis MEMBER axis)
 
-    Q_PROPERTY (unsigned int chunk)
-    Q_PROPERTY (unsigned int stride)
+    Q_PROPERTY (unsigned int chunk MEMBER chunk)
+    Q_PROPERTY (unsigned int stride MEMBER stride)
 
-    Q_PROPERTY (bool use_random_mask)
-    Q_PROPERTY (double mask_prob)
-    Q_PROPERTY (bool thresh_enabled)
+    Q_PROPERTY (bool use_random_mask MEMBER use_random_mask)
+    Q_PROPERTY (double mask_prob MEMBER mask_prob)
+    Q_PROPERTY (bool thresh_enabled MEMBER thresh_enabled)
 
-    Q_PROPERTY (unsigned int thr_lo)
-    Q_PROPERTY (unsigned int thr_hi)
+    Q_PROPERTY (unsigned int thr_lo MEMBER thr_lo)
+    Q_PROPERTY (unsigned int thr_hi MEMBER thr_hi)
 
-    Q_PROPERTY (bool use_rand_chunk)
+    Q_PROPERTY (bool use_rand_chunk MEMBER use_rand_chunk)
 
 public:
     sort_mode mode{sort_mode::Luminosity};

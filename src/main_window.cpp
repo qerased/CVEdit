@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QColor>
 #include <QColorDialog>
+#include <QJsonDocument>
 #include <opencv2/core.hpp>
 
 #include "utils.h"
@@ -504,6 +505,15 @@ void main_window::create_menus ()
     connect (act_stop_, &QAction::triggered, this, &main_window::stop_source);
     source_menu->addAction (act_stop_);
 
+    auto * presets_menu = menuBar ()->addMenu ("Presets");
+    act_load_preset_ = new QAction ("Load Preset", this);
+    connect (act_load_preset_, &QAction::triggered, this, &main_window::load_filter_preset);
+    presets_menu->addAction (act_load_preset_);
+
+    act_save_preset_ = new QAction ("Save Preset", this);
+    connect (act_save_preset_, &QAction::triggered, this, &main_window::save_filter_preset);
+    presets_menu->addAction (act_save_preset_);
+
     auto * tb = addToolBar ("Main");
     tb->setObjectName ("tbMain");
     act_screenshot_ = new QAction ("Screenshot", this);
@@ -748,4 +758,77 @@ void main_window::show_mat (const cv::Mat & mat)
 {
     current_pixmap_ = utils::mat_to_pixmap (mat);
     update_preview ();
+}
+
+void main_window::load_filter_preset ()
+{
+    const QString filter = "Json (*.json);;All (*.*)";
+    const QString path = QFileDialog::getOpenFileName (this, "Open Preset", QString (), filter);
+
+    if (path.isEmpty ()) return;
+
+    QFile file (path);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+    {
+        statusBar ()->showMessage ("Failed to open preset", 3000);
+        return;
+    }
+
+    QString json_string = file.readAll ();
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson (json_string.toUtf8 (), &error);
+
+    if (error.error != QJsonParseError::NoError)
+    {
+        statusBar ()->showMessage (QString ("JSON parse error: %1").arg (error.errorString ()), 3000);
+        return;
+    }
+
+    if (doc.isNull () || !doc.isObject ())
+    {
+        statusBar ()->showMessage ("Invalid JSON format", 3000);
+        return;
+    }
+
+    bool ok = filter_chain_.from_json (doc.object ());
+    if (!ok)
+      statusBar ()->showMessage ("Failed to load preset (some filters may have errors)", 3000);
+
+
+    reprocess_and_show ();
+
+    statusBar ()->showMessage (QString ("Preset loaded: %1").arg (QFileInfo (path).fileName ()), 3000);
+}
+
+void main_window::save_filter_preset ()
+{
+    const QString filter = "Json (*.json);;All (*.*)";
+    const QString sugg = QDir::homePath () + "/preset_" +
+        QDateTime::currentDateTime ().toString ("yyyyMMdd_HHmmss") + ".json";
+    
+    const QString path = QFileDialog::getSaveFileName (
+        this, "Save Preset", sugg, filter);
+
+    if (path.isEmpty ())
+        return;
+
+    QJsonObject json = filter_chain_.to_json ();
+    QJsonDocument doc (json);
+
+    QFile file (path);
+    if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
+    {
+        statusBar ()->showMessage ("Failed to save preset", 3000);
+        return;
+    }
+
+    QByteArray json_data = doc.toJson (QJsonDocument::Indented);
+    if (file.write (json_data) == -1)
+    {
+        statusBar ()->showMessage ("Failed to write preset file", 3000);
+        return;
+    }
+
+    file.close ();
+    statusBar ()->showMessage (QString ("Preset saved: %1").arg (QFileInfo (path).fileName ()), 3000);
 }

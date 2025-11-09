@@ -5,10 +5,10 @@
 struct pixel_displace_params
 {
     Q_GADGET
-    Q_PROPERTY (int bw)
-    Q_PROPERTY (int bh)
-    Q_PROPERTY (int shift)
-    Q_PROPERTY (int speed)
+    Q_PROPERTY (int bw MEMBER bw)
+    Q_PROPERTY (int bh MEMBER bh)
+    Q_PROPERTY (int shift MEMBER shift)
+    Q_PROPERTY (int speed MEMBER speed)
 
 public:
     int bw{32};

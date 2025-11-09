@@ -1,0 +1,40 @@
+{
+    "filters": [
+        {
+            "enabled": true,
+            "id": "film_noise",
+            "order": 0,
+            "parameters": {
+                "flicker": 0.1899999976158142,
+                "grain": 0.46000000834465027,
+                "scratches": 0.15000000596046448
+            }
+        },
+        {
+            "enabled": true,
+            "id": "grayscale",
+            "order": 1,
+            "parameters": {
+            }
+        },
+        {
+            "enabled": true,
+            "id": "scanlines",
+            "order": 2,
+            "parameters": {
+                "k": 0.6200000047683716,
+                "period": 10,
+                "speed": 23
+            }
+        },
+        {
+            "enabled": true,
+            "id": "vignette",
+            "order": 4,
+            "parameters": {
+                "radius": 0,
+                "strength": 0.5
+            }
+        }
+    ]
+}

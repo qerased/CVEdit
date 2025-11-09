@@ -6,16 +6,16 @@
 struct gradient_overlay_parameters
 {
     Q_GADGET
-    Q_PROPERTY (float c0_b)
-    Q_PROPERTY (float c0_g)
-    Q_PROPERTY (float c0_r)
+    Q_PROPERTY (float c0_b MEMBER c0_b)
+    Q_PROPERTY (float c0_g MEMBER c0_g)
+    Q_PROPERTY (float c0_r MEMBER c0_r)
 
-    Q_PROPERTY (float c1_b)
-    Q_PROPERTY (float c1_g)
-    Q_PROPERTY (float c1_r)
+    Q_PROPERTY (float c1_b MEMBER c1_b)
+    Q_PROPERTY (float c1_g MEMBER c1_g)
+    Q_PROPERTY (float c1_r MEMBER c1_r)
 
-    Q_PROPERTY (int axis)
-    Q_PROPERTY (float k)
+    Q_PROPERTY (int axis MEMBER axis)
+    Q_PROPERTY (float k MEMBER k)
 
 public:
     float c0_b = 255.f;

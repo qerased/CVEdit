@@ -5,7 +5,7 @@
 struct kuwahara_params
 {
     Q_GADGET
-    Q_PROPERTY (int k_size)
+    Q_PROPERTY (int k_size MEMBER k_size)
 
 public:
     int k_size{3}; /// min k = 3 and must be odd
