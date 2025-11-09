@@ -6,7 +6,7 @@
 class filter_colorize : public filter
 {
 public:
-    const char * name () const override { return "colorize"; }
+    const char * id () const override { return "colorize"; }
 
     void apply (cv::Mat &mat) override
     {

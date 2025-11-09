@@ -6,7 +6,7 @@
 class filter_vignette : public filter
 {
 public:
-    const char * name () const { return "vignette"; }
+    const char * id () const { return "vignette"; }
 
     void apply (cv::Mat &mat) override
     {

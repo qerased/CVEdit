@@ -6,7 +6,7 @@
 class filter_hue_shift : public filter
 {
 public:
-    const char * name () const { return "hue shift"; }
+    const char * id () const { return "hue_shift"; }
 
     void apply (cv::Mat &mat) override
     {

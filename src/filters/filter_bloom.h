@@ -5,7 +5,7 @@
 class filter_bloom : public filter
 {
 public:
-    const char * name () const override { return "Bloom"; }
+    const char * id () const override { return "bloom"; }
 
     void apply (cv::Mat & mat) override
     {

@@ -5,7 +5,7 @@
 class filter_kuwahara : public filter
 {
 public:
-    const char * name () const override { return "kuwahara"; }
+    const char * id () const override { return "kuwahara"; }
 
     void apply (cv::Mat & mat) override
     {

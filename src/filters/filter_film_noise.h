@@ -5,7 +5,7 @@
 class filter_film_noise : public filter
 {
 public:
-    const char * name () const override { return "film noise"; }
+    const char * id () const override { return "film_noise"; }
 
     void apply (cv::Mat &mat) override
     {

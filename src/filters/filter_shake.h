@@ -5,7 +5,7 @@
 class filter_shake : public filter
 {
 public:
-    const char *  name () const override { return "Glitch"; }
+    const char *  id () const override { return "glitch"; }
 
     void apply (cv::Mat & mat) override {};
 

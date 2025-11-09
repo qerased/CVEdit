@@ -5,7 +5,7 @@
 class filter_blur : public filter
 {
 public:
-    const char * name () const override { return "Gaussian Blur"; }
+    const char * id () const override { return "gaussian_blur"; }
 
     void apply (cv::Mat & mat) override
     {

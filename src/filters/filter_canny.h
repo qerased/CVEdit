@@ -6,7 +6,7 @@
 class filter_canny : public filter
 {
 public:
-    const char * name () const override { return "Canny"; }
+    const char * id () const override { return "canny"; }
 
     void apply (cv::Mat &mat) override
     {

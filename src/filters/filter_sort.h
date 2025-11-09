@@ -18,7 +18,7 @@ class filter_sort : public filter
 {
 public:
 
-    const char * name () const { return "Sort"; }
+    const char * id () const { return "sort"; }
 
     void apply (cv::Mat &mat) override
     {

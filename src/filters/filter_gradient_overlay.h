@@ -6,7 +6,7 @@
 class filter_gradient_overlay : public filter
 {
 public:
-    const char * name () const override { return "gradient_overlay"; }
+    const char * id () const override { return "gradient_overlay"; }
 
     void apply (cv::Mat & mat) override
     {

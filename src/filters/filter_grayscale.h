@@ -5,7 +5,7 @@
 class filter_grayscale : public filter
 {
 public:
-    const char * name () const override { return "grayscale"; }
+    const char * id () const override { return "grayscale"; }
 
     void apply (cv::Mat &mat) override
     {

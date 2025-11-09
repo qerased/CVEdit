@@ -6,7 +6,7 @@ class filter_pixel_displace : public filter
 {
 public:
 
-    const char * name () const { return "pixel displace"; }
+    const char * id () const { return "pixel_displace"; }
 
     void apply (cv::Mat & mat) override
     {

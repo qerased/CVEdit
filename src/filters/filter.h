@@ -12,7 +12,7 @@ class filter
 {
 public:
     virtual ~filter ();
-    virtual const char * name () const = 0;
+    virtual const char * id () const = 0;
 
     void set_enabled (bool e) { enabled_ = e; }
     bool enabled () const { return enabled_; }

@@ -6,7 +6,7 @@
 class filter_scanlines : public filter
 {
 public:
-    const char * name () const override { return "scanlines"; }
+    const char * id () const override { return "scanlines"; }
 
     void apply (cv::Mat & mat) override
     {
