@@ -479,6 +479,113 @@ void main_window::create_filters_dock ()
     scroll->setWidget (w);
     dock_filters_->setWidget (scroll);
     addDockWidget (Qt::RightDockWidgetArea, dock_filters_);
+
+    create_presets_dock ();
+
+    tabifyDockWidget (dock_presets_, dock_filters_);
+    dock_presets_->raise ();
+}
+
+void main_window::create_presets_dock ()
+{
+    dock_presets_ = new QDockWidget ("Presets", this);
+    dock_presets_->setAllowedAreas (Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    dock_presets_->setFeatures (QDockWidget::DockWidgetMovable);
+    addDockWidget (Qt::RightDockWidgetArea, dock_presets_);
+
+    auto * w = new QWidget (dock_presets_);
+    auto * v = new QVBoxLayout (w);
+
+    v->setContentsMargins (8, 8, 8, 8);
+    v->setSpacing (8);
+
+    auto * title = new QLabel ("Available presets:", w);
+    list_presets_ = new QListWidget (w);
+    list_presets_->setSelectionMode (QAbstractItemView::SingleSelection);
+    list_presets_->setUniformItemSizes (true);
+
+    auto * h = new QHBoxLayout ();
+    btn_apply_preset_ = new QPushButton ("Apply", w);
+    h->addWidget (btn_apply_preset_);
+
+    v->addWidget (title);
+    v->addWidget (list_presets_, 1);
+    v->addLayout (h);
+    w->setLayout (v);
+    dock_presets_->setWidget (w);
+
+    connect (btn_apply_preset_, &QPushButton::clicked, this, [this]()
+    {
+        auto * it = list_presets_->currentItem ();
+        if (!it)
+        {
+            statusBar ()->showMessage ("Choose preset", 3000);
+            return;
+        }
+        apply_preset_from_res (it->data(Qt::UserRole).toString ());
+    });
+
+    populate_presets ();
+}
+
+void main_window::populate_presets ()
+{
+    list_presets_->clear ();
+
+    QDir dir (":/presets");
+    const QStringList files =
+        dir.entryList (QStringList () << "*.json", QDir::Files, QDir::Name);
+
+    if (files.isEmpty ())
+    {
+        auto * it = new QListWidgetItem ("No presets found", list_presets_);
+        it->setFlags (Qt::NoItemFlags);
+        return;
+    }
+
+    for (const QString & file : files)
+    {
+        const QString path = QString (":/presets/%1").arg (file);
+        auto * it = new QListWidgetItem (file, list_presets_);
+        it->setData (Qt::UserRole, path);
+        list_presets_->addItem (it);
+    }
+}
+
+void main_window::apply_preset_from_res (const QString &path)
+{
+    QFile file (path);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+    {
+        statusBar ()->showMessage ("Failed to open preset", 3000);
+        return;
+    }
+
+    QString json_string = file.readAll ();
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson (json_string.toUtf8 (), &error);
+
+    if (error.error != QJsonParseError::NoError)
+    {
+        statusBar ()->showMessage (QString ("JSON parse error: %1").arg (error.errorString ()), 3000);
+        return;
+    }
+
+    if (doc.isNull () || !doc.isObject ())
+    {
+        statusBar ()->showMessage ("Invalid JSON format", 3000);
+        return;
+    }
+
+    bool ok = filter_chain_.from_json (doc.object ());
+    if (!ok)
+        statusBar ()->showMessage ("Failed to load preset (some filters may have errors)", 3000);
+
+    sync_ui_with_filters ();
+
+    reprocess_and_show ();
+
+    statusBar ()->showMessage (QString ("Preset loaded: %1").arg (QFileInfo (path).fileName ()), 3000);
 }
 
 
@@ -769,38 +876,7 @@ void main_window::load_filter_preset ()
 
     if (path.isEmpty ()) return;
 
-    QFile file (path);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-    {
-        statusBar ()->showMessage ("Failed to open preset", 3000);
-        return;
-    }
-
-    QString json_string = file.readAll ();
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson (json_string.toUtf8 (), &error);
-
-    if (error.error != QJsonParseError::NoError)
-    {
-        statusBar ()->showMessage (QString ("JSON parse error: %1").arg (error.errorString ()), 3000);
-        return;
-    }
-
-    if (doc.isNull () || !doc.isObject ())
-    {
-        statusBar ()->showMessage ("Invalid JSON format", 3000);
-        return;
-    }
-
-    bool ok = filter_chain_.from_json (doc.object ());
-    if (!ok)
-      statusBar ()->showMessage ("Failed to load preset (some filters may have errors)", 3000);
-
-    sync_ui_with_filters ();
-
-    reprocess_and_show ();
-
-    statusBar ()->showMessage (QString ("Preset loaded: %1").arg (QFileInfo (path).fileName ()), 3000);
+    apply_preset_from_res (path);
 }
 
 void main_window::save_filter_preset ()

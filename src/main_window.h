@@ -10,6 +10,7 @@
 #include <QGroupBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QListWidget>
 
 #include "video_source.h"
 #include "filters/filter.h"
@@ -54,6 +55,9 @@ private:
     void create_menus ();
     void create_status_bar ();
     void create_filters_dock ();
+    void create_presets_dock ();
+    void apply_preset_from_res (const QString & path);
+    void populate_presets ();
 
     void update_preview ();
 
@@ -104,6 +108,9 @@ private:
     filter_chain filter_chain_;
 
     QDockWidget * dock_filters_ = nullptr;
+    QDockWidget * dock_presets_ = nullptr;
+    QListWidget * list_presets_ = nullptr;
+    QPushButton * btn_apply_preset_ = nullptr;
 
     filter_grayscale * filter_grayscale_;
     QCheckBox * chk_grayscale_  = nullptr;

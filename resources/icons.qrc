@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource prefix="/">
         <file>test.png</file>
+        <file>presets/old_tv.json</file>
     </qresource>
 </RCC>
