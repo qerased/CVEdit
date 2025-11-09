@@ -2,6 +2,15 @@
 #define CVEDIT_FILTER_KUWAHARA_H
 #include "filter.h"
 
+struct kuwahara_params
+{
+    Q_GADGET
+    Q_PROPERTY (int k_size)
+
+public:
+    int k_size{3}; /// min k = 3 and must be odd
+};
+
 class filter_kuwahara : public filter
 {
 public:
@@ -14,7 +23,7 @@ public:
         const int rows = mat.rows;
         const int cols = mat.cols;
 
-        const int r = k_size_ / 2;
+        const int r = params_.k_size / 2;
         const int q = r + 1;
 
         cv::Mat hsv;
@@ -119,11 +128,28 @@ public:
 
     void set_k_size (int k)
     {
-        k_size_ = std::max (3, k - !(k % 2));
+        params_.k_size = std::max (3, k - !(k % 2));
+    }
+
+    bool set_parameters (const QJsonObject &json) override
+    {
+        kuwahara_params tmp = params_;
+        bool ok = json_to_filter (&tmp, kuwahara_params::staticMetaObject, json);
+        if (ok)
+        {
+            params_ = tmp;
+            params_.k_size = std::max (3, params_.k_size - !(params_.k_size % 2));
+        }
+        return ok;
+    }
+
+    QJsonObject parameters() const override
+    {
+        return filter_to_json (&params_, kuwahara_params::staticMetaObject);
     }
 
 private:
-    int k_size_ {3}; /// min k = 3 and must be odd
+    kuwahara_params params_;
 };
 
 #endif //CVEDIT_FILTER_KUWAHARA_H

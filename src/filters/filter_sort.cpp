@@ -36,7 +36,7 @@ void filter_sort::sort_global (cv::Mat & mat)
     const int pixels = mat.rows * mat.cols;
     std::vector<uint8_t> keys (pixels);
 
-    if (mode_ == sort_mode::Hue)
+    if (params_.mode == sort_mode::Hue)
     {
         cv::Mat hsv;
         cv::cvtColor (mat, hsv, cv::COLOR_BGR2HSV);
@@ -72,31 +72,31 @@ void filter_sort::sort_rows (cv::Mat &mat)
     const unsigned int w = mat.cols;
     const unsigned int h = mat.rows;
 
-    const unsigned int chunk = chunk_ > 0 ? chunk_ : w;
-    const unsigned int stride = stride_ > 0 && chunk_ > 0 ? stride_ : w;
+    const unsigned int chunk = params_.chunk > 0 ? params_.chunk : w;
+    const unsigned int stride = params_.stride > 0 && params_.chunk > 0 ? params_.stride : w;
 
     std::vector<uint8_t> keys;
     keys.reserve (chunk);
     std::vector<cv::Vec3b> buf;
     buf.reserve (chunk);
 
-    const int dx = axis_ == sort_axis::Vertical ? stride : 1;
-    const int dy = axis_ == sort_axis::Vertical ? 1 : stride;
+    const int dx = params_.axis == sort_axis::Vertical ? stride : 1;
+    const int dy = params_.axis == sort_axis::Vertical ? 1 : stride;
 
-    std::uniform_int_distribution<int> chunk_jitter (std::max (8u, chunk_ / 2), std::max (chunk_ * 3/2, 10u));
-    const unsigned int xlen = axis_ == sort_axis::Vertical ? (use_rand_chunk_ ? chunk_jitter(rng_) : chunk) : w;
+    std::uniform_int_distribution<int> chunk_jitter (std::max (8u, params_.chunk / 2), std::max (params_.chunk * 3/2, 10u));
+    const unsigned int xlen = params_.axis == sort_axis::Vertical ? (params_.use_rand_chunk ? chunk_jitter(rng_) : chunk) : w;
 
-    const unsigned int yloop = axis_ == sort_axis::Vertical ? 1 : chunk;
+    const unsigned int yloop = params_.axis == sort_axis::Vertical ? 1 : chunk;
 
-    const bool use_mask = use_random_mask_ && (stride_ > 0);
-    const double auto_p = (stride_ > 0) ? (1.0 / static_cast<double> (stride_)) : 1.0;
-    const double pick_p = (mask_prob_ > 0.0 && mask_prob_ <= 1.0) ? mask_prob_ : auto_p;
+    const bool use_mask = params_.use_random_mask && (params_.stride > 0);
+    const double auto_p = (params_.stride > 0) ? (1.0 / static_cast<double> (params_.stride)) : 1.0;
+    const double pick_p = (params_.mask_prob > 0.0 && params_.mask_prob <= 1.0) ? params_.mask_prob : auto_p;
     std::bernoulli_distribution pick_dist (pick_p);
 
     auto should_sort_key = [&] (unsigned int k)
     {
-        if (!thr_enabled_) return true;
-        return (k < thr_lo_) || (k > thr_hi_);
+        if (!params_.thresh_enabled) return true;
+        return (k < params_.thr_lo) || (k > params_.thr_hi);
     };
 
     for (int y = 0; y < h; y += dy)
@@ -113,7 +113,7 @@ void filter_sort::sort_rows (cv::Mat &mat)
                 keys.resize (len);
                 buf.resize (len);
 
-                if (mode_ == sort_mode::Hue)
+                if (params_.mode == sort_mode::Hue)
                 {
                     cv::Mat row_mat (1, w, CV_8UC3, row);
                     cv::Mat hsv_row;
@@ -135,7 +135,7 @@ void filter_sort::sort_rows (cv::Mat &mat)
                     }
                 }
 
-                if (!thr_enabled_)
+                if (!params_.thresh_enabled)
                 {
                     std::vector<cv::Vec3b> out (len);
                     counting_scatter_segment (buf.data (), keys.data (), len,
@@ -168,8 +168,8 @@ void filter_sort::sort_rows (cv::Mat &mat)
                     }
                 }
 
-                if ((axis_ == sort_axis::Vertical && chunk == 0) ||
-                     axis_ == sort_axis::Horizontal)
+                if ((params_.axis == sort_axis::Vertical && chunk == 0) ||
+                     params_.axis == sort_axis::Horizontal)
                     break;
             }
         }
@@ -180,9 +180,9 @@ void filter_sort::sort_cols (cv::Mat & mat)
 {
     cv::Mat rot;
     cv::rotate (mat, rot, cv::ROTATE_90_CLOCKWISE);
-    auto save = axis_;
-    axis_ = axis_ == sort_axis::Vertical ? sort_axis::Horizontal : sort_axis::Vertical;
+    auto save = params_.axis;
+    params_.axis = params_.axis == sort_axis::Vertical ? sort_axis::Horizontal : sort_axis::Vertical;
     sort_rows (rot);
-    axis_ = save;
+    params_.axis = save;
     cv::rotate (rot, mat, cv::ROTATE_90_COUNTERCLOCKWISE);
 }

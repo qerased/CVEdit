@@ -23,6 +23,7 @@ qt_add_executable(CVEdit
         src/video_source.cpp
         resources/icons.qrc
 
+        src/filters/filter_param_helper.h
         src/filters/filter.h
         src/filters/filter.cpp
         src/filters/filter_grayscale.h

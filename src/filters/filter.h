@@ -3,6 +3,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "filter_param_helper.h"
+
 struct frame_info
 {
     unsigned int tick_num_;
@@ -27,6 +29,9 @@ public:
     {
         num_order_ = new_ord;
     }
+
+    virtual QJsonObject parameters () const { return QJsonObject (); }
+    virtual bool set_parameters (const QJsonObject & json) { return true; }
 
 private:
     bool enabled_ {true};

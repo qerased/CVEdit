@@ -2,6 +2,19 @@
 #define CVEDIT_FILTER_FILM_NOISE_H
 #include "filter.h"
 
+struct film_noise_params
+{
+    Q_GADGET
+    Q_PROPERTY (float grain)
+    Q_PROPERTY (float scratches)
+    Q_PROPERTY (float flicker)
+
+public:
+    float grain{0.25f};
+    float scratches{0.15f};
+    float flicker{0.06f};
+};
+
 class filter_film_noise : public filter
 {
 public:
@@ -23,22 +36,22 @@ public:
 
         /// Flickering
         float phase = static_cast<float> (fi.tick_num_ % 1000) * (2 * M_PI / 100);
-        float bright = 1.f + flicker_ * std::sin (phase);
+        float bright = 1.f + params_.flicker * std::sin (phase);
         srcf *= bright;
 
         /// grain
-        if (grain_ > 0.f)
+        if (params_.grain > 0.f)
         {
             cv::Mat noise (mat.size (), CV_32FC3);
-            cv::randn (noise, 0.0, grain_ * 0.8);
+            cv::randn (noise, 0.0, params_.grain * 0.8);
             srcf += noise;
         }
 
         /// scratches
-        if (scratches_ > 0.f)
+        if (params_.scratches > 0.f)
         {
             rng.state = static_cast<uint64>(0x1234ABCD) + static_cast<uint64>(fi.tick_num_ * 12345678ULL);
-            int lines = static_cast<int> (scratches_ * 6. + rng.uniform (0, 3));
+            int lines = static_cast<int> (params_.scratches * 6. + rng.uniform (0, 3));
             for (int i = 0; i < lines; i++)
             {
                 int x1 = rng.uniform (0, mat.cols), y1 = rng.uniform (0, mat.rows);
@@ -56,14 +69,26 @@ public:
         srcf.convertTo (mat, CV_8UC3, 255.);
     }
 
-    void set_grain (float gr) { grain_ = gr; }
-    void set_scratches (float s) { scratches_ = s; }
-    void set_flicker (float f) {flicker_ = f; }
-private:
-    float grain_{0.25f};
-    float scratches_{0.15f};
-    float flicker_{0.06f};
+    void set_grain (float gr) { params_.grain = gr; }
+    void set_scratches (float s) { params_.scratches = s; }
+    void set_flicker (float f) { params_.flicker = f; }
 
+    bool set_parameters (const QJsonObject &json) override
+    {
+        film_noise_params tmp = params_;
+        bool ok = json_to_filter (&tmp, film_noise_params::staticMetaObject, json);
+        if (ok)
+            params_ = tmp;
+        return ok;
+    }
+
+    QJsonObject parameters () const override
+    {
+        return filter_to_json (&params_, film_noise_params::staticMetaObject);
+    }
+
+private:
+    film_noise_params params_;
     cv::RNG rng;
 };
 
