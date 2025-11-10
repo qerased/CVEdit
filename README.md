@@ -93,4 +93,4 @@ Filters panel (Dock):
 
 ## Example
 
-![example](https://s679sas.storage.yandex.net/rdisk/da866c7ccb584db7ffe2948856587d1daf3397aeaf86688b67883ada9966885d/6911d2b8/FODcF8SSEmHaLV-6-ylB84CUlKL9BtFjKuOLnIUq6G1QgL2mj-C8dUlQKG9g5sj8k122Ii6VcM5RmXZw1Cc1ww==?uid=0&filename=cveeeeedit.gif&disposition=inline&hash=&limit=0&content_type=image%2Fgif&owner_uid=0&fsize=41505477&hid=9c4a1e6b29b65f2c9db35db008adfc0d&media_type=image&tknv=v3&etag=f560dafdbe91840e277b6ac07f825af2&ts=6433c35901e00&s=04cf8aa81b1f469f2f32fa69c27a82eeed828dcab8e3b94a87c9e482d83f0a78&pb=U2FsdGVkX1-vUb-l8enFhwuVCRnLygXLrwxhhX2DTnVF-MuIOnEX_pIkzAq-DuNmjjsKTMhMMHTCQcaS4FFFhjBRWcmnqD891KhtEootdmE)
+![example](https://media4.giphy.com/media/O3EN07xr4RNRGMD11o/giphy.gif?cid=9b38fe91ftq83qk5x7cqq6qkfxtpvu3on77sd0tfpfnhp0oi&ep=v1_gifs_username&rid=giphy.gif&ct=g)
