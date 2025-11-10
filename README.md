@@ -91,23 +91,6 @@ Filters panel (Dock):
 - Optional downscale in preview for live sources; buffer reuse to reduce copies
 - Multithreading for faster rendering
 
-## Examples
+## Example
 
-<table>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/829e5512-d0f9-41fd-bea7-68837e4ae17d" alt="example 1" width="100%" />
-    </td>
-    <td>
-      <img src="https://github.com/user-attachments/assets/0075d64e-ac89-44fd-bc3a-130b302a9552" alt="example 2" width="100%" />
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/a85dd4a2-5fe2-4f90-bdea-23ca04a33a23" alt="example 3" width="100%" />
-    </td>
-    <td>
-      <img src="https://github.com/user-attachments/assets/45908b0a-868b-4525-a187-71434a458cc5" alt="example 4" width="100%" />
-    </td>
-  </tr>
-</table>
+![example](https://s679sas.storage.yandex.net/rdisk/da866c7ccb584db7ffe2948856587d1daf3397aeaf86688b67883ada9966885d/6911d2b8/FODcF8SSEmHaLV-6-ylB84CUlKL9BtFjKuOLnIUq6G1QgL2mj-C8dUlQKG9g5sj8k122Ii6VcM5RmXZw1Cc1ww==?uid=0&filename=cveeeeedit.gif&disposition=inline&hash=&limit=0&content_type=image%2Fgif&owner_uid=0&fsize=41505477&hid=9c4a1e6b29b65f2c9db35db008adfc0d&media_type=image&tknv=v3&etag=f560dafdbe91840e277b6ac07f825af2&ts=6433c35901e00&s=04cf8aa81b1f469f2f32fa69c27a82eeed828dcab8e3b94a87c9e482d83f0a78&pb=U2FsdGVkX1-vUb-l8enFhwuVCRnLygXLrwxhhX2DTnVF-MuIOnEX_pIkzAq-DuNmjjsKTMhMMHTCQcaS4FFFhjBRWcmnqD891KhtEootdmE)
